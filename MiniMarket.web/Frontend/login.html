@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MiniMarket</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="text-center mb-4">🔐 Iniciar Sesión</h3>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" value="admin@minimarket.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" value="admin123" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+                        <div id="errorMsg" class="text-danger mt-2 text-center" style="display:none;"></div>
+                        <div id="successMsg" class="text-success mt-2 text-center" style="display:none;">✅ Login exitoso. Redirigiendo...</div>
+                    </form>
+                    <div class="text-center mt-3"><a href="register.html">¿No tienes cuenta? Regístrate</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+    const successMsg = document.getElementById("successMsg");
+    errorMsg.style.display = "none";
+    successMsg.style.display = "none";
+    if (!email || !password) {
+        errorMsg.textContent = "Completa todos los campos.";
+        errorMsg.style.display = "block";
+        return;
+    }
+    try {
+        const response = await fetch("http://localhost:5285/api/Auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            errorMsg.textContent = data.message || "Credenciales inválidas";
+            errorMsg.style.display = "block";
+            return;
+        }
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("usuario", data.usuario);
+        localStorage.setItem("rol", data.rol);
+        successMsg.style.display = "block";
+        setTimeout(function() {
+            window.location.href = "dashboard.html";
+        }, 1500);
+    } catch (error) {
+        errorMsg.textContent = "Error de conexión. Asegúrate de que el servidor esté corriendo.";
+        errorMsg.style.display = "block";
+        console.error(error);
+    }
+});
+</script>
+</body>
+</html>
