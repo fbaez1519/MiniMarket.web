@@ -1,0 +1,21 @@
+/* Estilos generales */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Mejora para las tarjetas de resumen */
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Fondo para el login */
+#loginSection {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
