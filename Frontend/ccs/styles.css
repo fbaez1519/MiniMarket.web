@@ -16,7 +16,7 @@ body {
 #loginSection .card {
     border-radius: 15px;
     border: none;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 #loginSection .card-title {
@@ -52,7 +52,7 @@ body {
 
 /* Estilos para el dashboard */
 .navbar {
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand {
@@ -64,100 +64,7 @@ body {
 .card {
     border-radius: 12px;
     border: none;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-
-.card .display-6 {
-    font-weight: 700;
-    margin-bottom: 0;
-}
-
-.card .card-title {
-    font-weight: 500;
-    font-size: 1rem;
-    opacity: 0.9;
-}
-
-/* Tabla de productos */
-.table {
-    margin-bottom: 0;
-}
-
-.table th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    font-weight: 600;
-    color: #495057;
-}
-
-.table td {
-    vertical-align: middle;
-}
-
-/* Badges de estado */
-.badge-stock {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-}
-
-.badge-stock-low {
-    background-color: #dc3545;
-    color: white;
-}
-
-.badge-stock-medium {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-.badge-stock-high {
-    background-color: #28a745;
-    color: white;
-}
-
-/* Animaciones 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .display-6 {
-        font-size: 1.5rem !important;
-    }
-    
-    .container {
-        padding: 0 15px;
-    }
-    
-    .card-body {
-        padding: 1rem;
-    }
-}
-
-/* Loading spinner */
-.loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(0,0,0,0.1);
-    border-radius: 50%;
-    border-top-color: #667eea;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
