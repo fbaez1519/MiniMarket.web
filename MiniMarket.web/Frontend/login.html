@@ -3,74 +3,944 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - MiniMarket</title>
+    <title>MiniMarket - Sistema de Gestión</title>
+    
+    <!-- ===== CDN ===== -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* ============================================================
+                   VARIABLES DE COLOR
+                   ============================================================ */
+        :root {
+            --color-primary: #1a2a4a;
+            --color-primary-light: #2c4a7a;
+            --color-primary-dark: #0f1a2e;
+            --color-secondary: #2ecc71;
+            --color-secondary-dark: #27ae60;
+            --color-accent: #f1c40f;
+            --color-danger: #e74c3c;
+            --color-text: #2c3e50;
+            --color-text-light: #7f8c8d;
+            --color-bg: #f8f9fa;
+            --color-card: #ffffff;
+            --shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            --radius: 16px;
+            --transition: 0.3s ease;
+        }
+
+        /* ============================================================
+                   RESET Y GLOBALES
+                   ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, var(--color-primary-dark), var(--color-primary), var(--color-primary-light));
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* ============================================================
+                   FONDO DECORATIVO
+                   ============================================================ */
+        .bg-decoration {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(46, 204, 113, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 30%, rgba(241, 196, 15, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(44, 74, 122, 0.06) 0%, transparent 50%);
+            animation: rotateBg 60s linear infinite;
+        }
+
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================================
+                   TARJETA PRINCIPAL
+                   ============================================================ */
+        .card-auth {
+            position: relative;
+            z-index: 1;
+            background: var(--color-card);
+            border-radius: var(--radius);
+            border: none;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 440px;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .card-auth:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-auth .card-body {
+            padding: 2.2rem 2rem;
+        }
+
+        /* ============================================================
+                   LOGO
+                   ============================================================ */
+        .logo {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .logo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(145deg, var(--color-secondary), var(--color-secondary-dark));
+            border-radius: 50%;
+            color: #fff;
+            font-size: 2.2rem;
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+            transition: transform var(--transition);
+        }
+
+        .logo-icon:hover {
+            transform: scale(1.05) rotate(-4deg);
+        }
+
+        .logo-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 0.4rem 0 0.1rem;
+        }
+
+        .logo-subtitle {
+            font-size: 0.8rem;
+            color: var(--color-text-light);
+        }
+
+        /* ============================================================
+                   FORMULARIOS
+                   ============================================================ */
+        .form-auth {
+            display: none;
+            animation: fadeSlide 0.35s ease;
+        }
+
+        .form-auth.active {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-label .required {
+            color: var(--color-danger);
+            margin-left: 2px;
+        }
+
+        .input-group-text {
+            background: #f8fafc;
+            border: 2px solid #e8edf3;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: var(--color-text-light);
+            padding: 0.5rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 2px solid #e8edf3;
+            border-radius: 10px;
+            padding: 0.55rem 0.9rem;
+            font-size: 0.9rem;
+            background: #f8fafc;
+            transition: all var(--transition);
+        }
+
+        .input-group .form-control {
+            border-radius: 0 10px 10px 0;
+            border-left: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--color-primary-light);
+            box-shadow: 0 0 0 4px rgba(44, 74, 122, 0.08);
+            background: #fff;
+        }
+
+        .input-group .form-control:focus {
+            border-left: none;
+        }
+
+        /* ============================================================
+                   BOTÓN PRINCIPAL
+                   ============================================================ */
+        .btn-primary-custom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0.7rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #fff;
+            background: linear-gradient(145deg, var(--color-secondary), var(--color-secondary-dark));
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(46, 204, 113, 0.3);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+
+        .btn-primary-custom:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-primary-custom:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* ============================================================
+                   ENLACES DE ACCIÓN (Registro y Olvidé Contraseña)
+                   ============================================================ */
+        .action-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e8edf3;
+        }
+
+        .action-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.6rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .action-link i {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Enlace de Registro */
+        .action-link.register {
+            color: var(--color-primary);
+            background: #f0f4f8;
+            border-color: #e8edf3;
+        }
+
+        .action-link.register:hover {
+            background: #e8f0fe;
+            border-color: var(--color-primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 42, 74, 0.1);
+        }
+
+        .action-link.register i {
+            color: var(--color-secondary);
+        }
+
+        /* Enlace de Olvidé Contraseña */
+        .action-link.forgot {
+            color: var(--color-text-light);
+            background: transparent;
+        }
+
+        .action-link.forgot:hover {
+            color: var(--color-primary);
+            background: #f8fafc;
+            border-color: #e8edf3;
+            transform: translateY(-2px);
+        }
+
+        .action-link.forgot i {
+            color: var(--color-accent);
+        }
+
+        /* ============================================================
+                   PASSWORD TOGGLE
+                   ============================================================ */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--color-text-light);
+            cursor: pointer;
+            padding: 4px;
+            z-index: 5;
+        }
+
+        .toggle-password:hover {
+            color: var(--color-primary);
+        }
+
+        .password-field {
+            padding-right: 40px;
+        }
+
+        /* ============================================================
+                   MENSAJES
+                   ============================================================ */
+        .msg {
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+            display: none;
+        }
+
+        .msg-info {
+            display: block;
+            background: #e8f4fd;
+            color: #1a5276;
+            border: 1px solid #aed6f1;
+        }
+
+        .msg-success {
+            display: block;
+            background: #eafaf1;
+            color: #1a7a4a;
+            border: 1px solid #82e0aa;
+        }
+
+        .msg-error {
+            display: block;
+            background: #fdedec;
+            color: #922b21;
+            border: 1px solid #f5b7b1;
+        }
+
+        /* ============================================================
+                   DIVISOR
+                   ============================================================ */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.2rem 0;
+            color: var(--color-text-light);
+            font-size: 0.75rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e8edf3;
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 480px) {
+            .card-auth .card-body {
+                padding: 1.5rem 1.2rem;
+            }
+
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+
+            .logo-title {
+                font-size: 1.3rem;
+            }
+
+            .form-control {
+                font-size: 0.85rem;
+                padding: 0.45rem 0.7rem;
+            }
+
+            .action-link {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+        }
+
+        /* ============================================================
+                   SCROLLBAR
+                   ============================================================ */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-primary-light);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="text-center mb-4">🔐 Iniciar Sesión</h3>
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" value="admin@minimarket.com" required>
+
+    <!-- ===== DECORACIÓN DE FONDO ===== -->
+    <div class="bg-decoration"></div>
+
+    <!-- ===== TARJETA PRINCIPAL ===== -->
+    <div class="card-auth">
+        <div class="card-body">
+
+            <!-- ===== LOGO ===== -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="logo-title">MiniMarket</div>
+                <div class="logo-subtitle">Sistema de Gestión</div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- FORMULARIO: LOGIN (Principal)                              -->
+            <!-- ========================================================== -->
+            <div id="formLogin" class="form-auth active">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-envelope" style="color: var(--color-primary-light);"></i>
+                            Correo Electrónico
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="email" class="form-control" id="loginEmail"
+                                   placeholder="admin@minimarket.com" value="admin@minimarket.com" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" value="admin123" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-key" style="color: var(--color-primary-light);"></i>
+                            Contraseña
+                        </label>
+                        <div class="input-group" style="position: relative;">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control password-field" id="loginPassword"
+                                   placeholder="admin123" value="admin123" required>
+                            <button type="button" class="toggle-password" onclick="togglePass('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-                        <div id="errorMsg" class="text-danger mt-2 text-center" style="display:none;"></div>
-                        <div id="successMsg" class="text-success mt-2 text-center" style="display:none;">✅ Login exitoso. Redirigiendo...</div>
-                    </form>
-                    <div class="text-center mt-3"><a href="register.html">¿No tienes cuenta? Regístrate</a></div>
+                    </div>
+
+                    <button type="submit" class="btn-primary-custom" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> Ingresar
+                    </button>
+
+                    <div id="loginMsg" class="msg"></div>
+                </form>
+
+                <!-- ===== ENLACES DE ACCIÓN ===== -->
+                <div class="action-links">
+                    <a href="#" class="action-link register" id="showRegister">
+                        <i class="fas fa-user-plus"></i>
+                        <span>¿No tienes cuenta? <strong>Regístrate aquí</strong></span>
+                    </a>
+                    <a href="#" class="action-link forgot" id="showForgot">
+                        <i class="fas fa-key"></i>
+                        <span>¿Olvidaste tu contraseña? <strong>Recupérala</strong></span>
+                    </a>
                 </div>
             </div>
+
+            <!-- ========================================================== -->
+            <!-- FORMULARIO: REGISTRO                                        -->
+            <!-- ========================================================== -->
+            <div id="formRegister" class="form-auth">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--color-primary); font-weight: 600; margin: 0;">
+                        <i class="fas fa-user-plus" style="color: var(--color-secondary);"></i>
+                        Crear Cuenta
+                    </h5>
+                    <a href="#" class="action-link" id="backToLogin" 
+                       style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: #f0f4f8; border-radius: 8px; text-decoration: none; color: var(--color-primary);">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-user" style="color: var(--color-primary-light);"></i>
+                            Nombre Completo <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="regName"
+                                   placeholder="Juan Pérez" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-envelope" style="color: var(--color-primary-light);"></i>
+                            Correo Electrónico <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="regEmail"
+                                   placeholder="usuario@email.com" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-key" style="color: var(--color-primary-light);"></i>
+                            Contraseña <span class="required">*</span>
+                        </label>
+                        <div class="input-group" style="position: relative;">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control password-field" id="regPassword"
+                                   placeholder="Mínimo 6 caracteres" required minlength="6">
+                            <button type="button" class="toggle-password" onclick="togglePass('regPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small id="passHelp" class="text-muted" style="font-size:0.75rem;">
+                            <i class="fas fa-info-circle"></i> Mínimo 6 caracteres
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-check-circle" style="color: var(--color-primary-light);"></i>
+                            Confirmar Contraseña <span class="required">*</span>
+                        </label>
+                        <div class="input-group" style="position: relative;">
+                            <span class="input-group-text"><i class="fas fa-check"></i></span>
+                            <input type="password" class="form-control password-field" id="regConfirm"
+                                   placeholder="Repite la contraseña" required>
+                            <button type="button" class="toggle-password" onclick="togglePass('regConfirm')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary-custom" id="registerBtn">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+
+                    <div id="registerMsg" class="msg"></div>
+                </form>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- FORMULARIO: RECUPERAR CONTRASEÑA                           -->
+            <!-- ========================================================== -->
+            <div id="formForgot" class="form-auth">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--color-primary); font-weight: 600; margin: 0;">
+                        <i class="fas fa-key" style="color: var(--color-accent);"></i>
+                        Recuperar Contraseña
+                    </h5>
+                    <a href="#" class="action-link" id="backToLogin2" 
+                       style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: #f0f4f8; border-radius: 8px; text-decoration: none; color: var(--color-primary);">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+
+                <form id="forgotForm">
+                    <div class="alert alert-info" style="font-size:0.85rem; border-radius:10px;">
+                        <i class="fas fa-info-circle"></i>
+                        Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-envelope" style="color: var(--color-primary-light);"></i>
+                            Correo Electrónico
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="forgotEmail"
+                                   placeholder="usuario@email.com" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary-custom" id="forgotBtn">
+                        <i class="fas fa-paper-plane"></i> Enviar Instrucciones
+                    </button>
+
+                    <div id="forgotMsg" class="msg"></div>
+                </form>
+            </div>
+
+            <!-- ===== DIVISOR ===== -->
+            <div class="divider">
+                <i class="fas fa-shield-alt" style="color: var(--color-secondary);"></i>
+                Sistema Seguro
+            </div>
+
+            <!-- ===== PIE ===== -->
+            <div class="text-center">
+                <small class="text-muted">
+                    <i class="fas fa-lock" style="color: var(--color-secondary);"></i>
+                    Tus datos están protegidos
+                </small>
+            </div>
+
         </div>
     </div>
-</div>
-<script>
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const errorMsg = document.getElementById("errorMsg");
-    const successMsg = document.getElementById("successMsg");
-    errorMsg.style.display = "none";
-    successMsg.style.display = "none";
-    if (!email || !password) {
-        errorMsg.textContent = "Completa todos los campos.";
-        errorMsg.style.display = "block";
-        return;
-    }
-    try {
-        const response = await fetch("http://localhost:5285/api/Auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            errorMsg.textContent = data.message || "Credenciales inválidas";
-            errorMsg.style.display = "block";
-            return;
+
+    <!-- ========================================================== -->
+    <!-- SCRIPTS                                                     -->
+    <!-- ========================================================== -->
+    <script>
+        /* =============================================================
+                   UTILITIES
+                   ============================================================= */
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            const icon = input.parentElement.querySelector('.toggle-password i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
         }
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("usuario", data.usuario);
-        localStorage.setItem("rol", data.rol);
-        successMsg.style.display = "block";
-        setTimeout(function() {
-            window.location.href = "dashboard.html";
-        }, 1500);
-    } catch (error) {
-        errorMsg.textContent = "Error de conexión. Asegúrate de que el servidor esté corriendo.";
-        errorMsg.style.display = "block";
-        console.error(error);
-    }
-});
-</script>
+
+        function showMsg(el, msg, type) {
+            el.textContent = msg;
+            el.className = 'msg msg-' + type;
+        }
+
+        function hideAllMsg() {
+            document.querySelectorAll('.msg').forEach(el => {
+                el.className = 'msg';
+                el.textContent = '';
+            });
+        }
+
+        function setLoading(btn, loading) {
+            btn.disabled = loading;
+            btn.innerHTML = loading
+                ? '<span class="spinner-border spinner-border-sm" role="status"></span> Procesando...'
+                : btn.dataset.original;
+        }
+
+        function showForm(formId) {
+            document.querySelectorAll('.form-auth').forEach(f => f.classList.remove('active'));
+            document.getElementById(formId).classList.add('active');
+            hideAllMsg();
+        }
+
+        /* =============================================================
+                   GUARDAR TEXTO ORIGINAL DE BOTONES
+                   ============================================================= */
+        document.querySelectorAll('.btn-primary-custom').forEach(btn => {
+            btn.dataset.original = btn.innerHTML;
+        });
+
+        /* =============================================================
+                   NAVEGACIÓN ENTRE FORMULARIOS
+                   ============================================================= */
+        // Mostrar registro
+        document.getElementById('showRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            showForm('formRegister');
+        });
+
+        // Mostrar recuperación
+        document.getElementById('showForgot').addEventListener('click', function(e) {
+            e.preventDefault();
+            showForm('formForgot');
+        });
+
+        // Volver al login desde registro
+        document.getElementById('backToLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            showForm('formLogin');
+        });
+
+        // Volver al login desde recuperación
+        document.getElementById('backToLogin2').addEventListener('click', function(e) {
+            e.preventDefault();
+            showForm('formLogin');
+        });
+
+        /* =============================================================
+                   LOGIN
+                   ============================================================= */
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideAllMsg();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const msg = document.getElementById('loginMsg');
+            const btn = document.getElementById('loginBtn');
+
+            if (!email || !password) {
+                showMsg(msg, '❌ Completa todos los campos.', 'error');
+                return;
+            }
+
+            setLoading(btn, true);
+            showMsg(msg, '⏳ Verificando credenciales...', 'info');
+
+            try {
+                const res = await fetch('http://localhost:5285/api/Auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showMsg(msg, '❌ ' + (data.message || data.title || 'Credenciales inválidas'), 'error');
+                    setLoading(btn, false);
+                    return;
+                }
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('usuario', data.usuario);
+                localStorage.setItem('rol', data.rol);
+
+                showMsg(msg, '✅ Login exitoso. Redirigiendo...', 'success');
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+
+            } catch (error) {
+                showMsg(msg, '❌ Error de conexión. Verifica el servidor en http://localhost:5285', 'error');
+                setLoading(btn, false);
+            }
+        });
+
+        /* =============================================================
+                   REGISTRO
+                   ============================================================= */
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideAllMsg();
+
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirm').value;
+            const msg = document.getElementById('registerMsg');
+            const btn = document.getElementById('registerBtn');
+
+            // Validaciones
+            if (!name || !email || !password || !confirm) {
+                showMsg(msg, '❌ Completa todos los campos.', 'error');
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                showMsg(msg, '❌ Correo electrónico inválido.', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showMsg(msg, '❌ La contraseña debe tener al menos 6 caracteres.', 'error');
+                return;
+            }
+            if (password !== confirm) {
+                showMsg(msg, '❌ Las contraseñas no coinciden.', 'error');
+                return;
+            }
+
+            setLoading(btn, true);
+            showMsg(msg, '⏳ Creando cuenta...', 'info');
+
+            try {
+                const res = await fetch('http://localhost:5285/api/Auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, confirmPassword: confirm })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showMsg(msg, '❌ ' + (data.message || data.title || 'Error al registrar'), 'error');
+                    setLoading(btn, false);
+                    return;
+                }
+
+                showMsg(msg, '✅ ¡Registro exitoso! Redirigiendo al login...', 'success');
+
+                setTimeout(() => {
+                    showForm('formLogin');
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').value = '';
+                    document.getElementById('regName').value = '';
+                    document.getElementById('regEmail').value = '';
+                    document.getElementById('regPassword').value = '';
+                    document.getElementById('regConfirm').value = '';
+                    setLoading(btn, false);
+                }, 2000);
+
+            } catch (error) {
+                showMsg(msg, '❌ Error de conexión. Verifica el servidor en http://localhost:5285', 'error');
+                setLoading(btn, false);
+            }
+        });
+
+        /* =============================================================
+                   RECUPERAR CONTRASEÑA
+                   ============================================================= */
+        document.getElementById('forgotForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideAllMsg();
+
+            const email = document.getElementById('forgotEmail').value.trim();
+            const msg = document.getElementById('forgotMsg');
+            const btn = document.getElementById('forgotBtn');
+
+            if (!email) {
+                showMsg(msg, '❌ Ingresa tu correo electrónico.', 'error');
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                showMsg(msg, '❌ Correo electrónico inválido.', 'error');
+                return;
+            }
+
+            setLoading(btn, true);
+            showMsg(msg, '⏳ Enviando instrucciones...', 'info');
+
+            try {
+                const res = await fetch('http://localhost:5285/api/Auth/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showMsg(msg, '❌ ' + (data.message || data.title || 'Error al enviar'), 'error');
+                    setLoading(btn, false);
+                    return;
+                }
+
+                showMsg(msg, '✅ Instrucciones enviadas. Revisa tu correo.', 'success');
+
+                setTimeout(() => {
+                    showForm('formLogin');
+                    document.getElementById('forgotEmail').value = '';
+                    setLoading(btn, false);
+                }, 3000);
+
+            } catch (error) {
+                showMsg(msg, '❌ Error de conexión. Verifica el servidor en http://localhost:5285', 'error');
+                setLoading(btn, false);
+            }
+        });
+
+        /* =============================================================
+                   VALIDACIÓN EN TIEMPO REAL
+                   ============================================================= */
+        // Contraseña - validación
+        document.getElementById('regPassword').addEventListener('input', function() {
+            const help = document.getElementById('passHelp');
+            if (this.value.length >= 6) {
+                help.style.color = '#27ae60';
+                help.innerHTML = '<i class="fas fa-check-circle"></i> Contraseña válida';
+            } else {
+                help.style.color = '';
+                help.innerHTML = '<i class="fas fa-info-circle"></i> Mínimo 6 caracteres';
+            }
+        });
+
+        // Confirmar contraseña
+        document.getElementById('regConfirm').addEventListener('input', function() {
+            const pass = document.getElementById('regPassword').value;
+            if (this.value === pass && this.value.length >= 6) {
+                this.style.borderColor = '#27ae60';
+            } else if (this.value.length > 0) {
+                this.style.borderColor = '#e74c3c';
+            } else {
+                this.style.borderColor = '';
+            }
+        });
+
+        // Limpiar mensajes al escribir
+        document.querySelectorAll('#loginEmail, #loginPassword').forEach(el => {
+            el.addEventListener('input', () => {
+                const msg = document.getElementById('loginMsg');
+                msg.className = 'msg';
+                msg.textContent = '';
+            });
+        });
+
+        document.querySelectorAll('#regName, #regEmail, #regPassword, #regConfirm').forEach(el => {
+            el.addEventListener('input', () => {
+                const msg = document.getElementById('registerMsg');
+                msg.className = 'msg';
+                msg.textContent = '';
+            });
+        });
+
+        document.getElementById('forgotEmail').addEventListener('input', () => {
+            const msg = document.getElementById('forgotMsg');
+            msg.className = 'msg';
+            msg.textContent = '';
+        });
+
+        /* =============================================================
+                   CONSOLA INFORMATIVA
+                   ============================================================= */
+        console.log('%c🛒 MiniMarket v2.0', 'font-size:18px; font-weight:bold; color:#2ecc71;');
+        console.log('%c📌 Credenciales de prueba:', 'font-weight:bold;');
+        console.log('   📧 admin@minimarket.com');
+        console.log('   🔑 admin123');
+        console.log('%c🔗 API: http://localhost:5285', 'color:#7f8c8d;');
+    </script>
+
 </body>
 </html>
