@@ -11,21 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // ============================================
-// 🔥 CONFIGURACIÓN DE CORS
-// ============================================
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
-        });
-});
-
-// ============================================
 // AUTOMAPPER - MAPPINGS
 // ============================================
 builder.Services.AddAutoMapper(typeof(Program));
@@ -43,9 +28,9 @@ builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // ============================================
-// JWT - AUTENTICACIÓN
+// JWT - AUTENTICACIÓN (AGREGADO)
 // ============================================
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"] ??
+var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"] ?? 
     throw new InvalidOperationException("JWT Key no configurada en appsettings.json"));
 
 builder.Services.AddAuthentication(options =>
@@ -77,9 +62,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ============================================
-// SWAGGER
-// ============================================
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -89,12 +71,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // ============================================
-// 🔥 CORS DEBE IR ANTES DE AUTENTICACIÓN
-// ============================================
-app.UseCors("AllowAll");
-
-// ============================================
-// AUTENTICACIÓN Y AUTORIZACIÓN
+// AUTENTICACIÓN Y AUTORIZACIÓN (AGREGADO)
 // ============================================
 app.UseAuthentication();
 app.UseAuthorization();
