@@ -225,7 +225,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .main-header {
             display: flex;
             justify-content: space-between;
@@ -405,25 +404,6 @@
             font-weight: 500;
         }
 
-        .stat-card-change {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 0.3rem;
-        }
-
-            .stat-card-change.up {
-                color: var(--color-secondary);
-                background: rgba(46, 204, 113, 0.1);
-            }
-
-            .stat-card-change.down {
-                color: var(--color-danger);
-                background: rgba(231, 76, 60, 0.1);
-            }
-
         /* ============================================================ */
         /* CARDS                                                        */
         /* ============================================================ */
@@ -442,24 +422,6 @@
                 color: var(--color-primary);
                 margin: 0;
             }
-
-            .section-header .btn-outline {
-                padding: 0.4rem 1.2rem;
-                border-radius: 50px;
-                border: 2px solid #e8edf3;
-                background: transparent;
-                font-weight: 600;
-                font-size: 0.8rem;
-                color: var(--color-text-light);
-                transition: all var(--transition);
-                cursor: pointer;
-            }
-
-                .section-header .btn-outline:hover {
-                    border-color: var(--color-primary);
-                    color: var(--color-primary);
-                    background: rgba(26, 42, 74, 0.04);
-                }
 
         .cards-grid {
             display: grid;
@@ -495,65 +457,7 @@
                 color: var(--color-secondary);
             }
 
-        /* Tabla de actividades */
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 0.7rem 0;
-            border-bottom: 1px solid #f0f2f5;
-        }
-
-            .activity-item:last-child {
-                border-bottom: none;
-            }
-
-        .activity-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-            .activity-dot.green {
-                background: var(--color-secondary);
-            }
-
-            .activity-dot.blue {
-                background: var(--color-info);
-            }
-
-            .activity-dot.yellow {
-                background: var(--color-accent);
-            }
-
-            .activity-dot.red {
-                background: var(--color-danger);
-            }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-text {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--color-primary);
-        }
-
-        .activity-time {
-            font-size: 0.7rem;
-            color: var(--color-text-light);
-        }
-
-        .activity-amount {
-            font-weight: 700;
-            color: var(--color-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Productos rápidos */
-        .product-item {
+        .client-item {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -561,44 +465,40 @@
             border-bottom: 1px solid #f0f2f5;
         }
 
-            .product-item:last-child {
+            .client-item:last-child {
                 border-bottom: none;
             }
 
-        .product-icon {
+        .client-avatar {
             width: 36px;
             height: 36px;
-            border-radius: 10px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
-            background: rgba(46, 204, 113, 0.08);
+            font-weight: 700;
+            font-size: 0.8rem;
+            background: rgba(46, 204, 113, 0.12);
             color: var(--color-secondary);
+            flex-shrink: 0;
         }
 
-        .product-info {
+        .client-info {
             flex: 1;
         }
 
-        .product-name {
+        .client-name {
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--color-primary);
         }
 
-        .product-stock {
+        .client-email {
             font-size: 0.7rem;
             color: var(--color-text-light);
         }
 
-        .product-price {
-            font-weight: 700;
-            color: var(--color-primary);
-            font-size: 0.9rem;
-        }
-
-        .product-status {
+        .client-status {
             font-size: 0.6rem;
             padding: 2px 10px;
             border-radius: 20px;
@@ -606,19 +506,31 @@
             text-transform: uppercase;
         }
 
-            .product-status.in-stock {
+            .client-status.active {
                 color: var(--color-secondary);
                 background: rgba(46, 204, 113, 0.1);
             }
 
-            .product-status.low-stock {
-                color: var(--color-warning);
-                background: rgba(243, 156, 18, 0.1);
-            }
-
-            .product-status.out-of-stock {
+            .client-status.inactive {
                 color: var(--color-danger);
                 background: rgba(231, 76, 60, 0.1);
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--color-text-light);
+        }
+
+            .empty-state i {
+                font-size: 2.5rem;
+                color: #e8edf3;
+                margin-bottom: 0.5rem;
+            }
+
+            .empty-state p {
+                margin: 0;
+                font-size: 0.85rem;
             }
 
         /* ============================================================ */
@@ -711,7 +623,6 @@
             }
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -729,7 +640,6 @@
                 background: var(--color-primary-light);
             }
 
-        /* Animaciones */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -787,8 +697,8 @@
         <div class="sidebar-user">
             <div class="sidebar-user-avatar" id="sidebarUserAvatar">E</div>
             <div class="sidebar-user-info">
-                <div class="sidebar-user-name" id="sidebarUserName">Erick Beltre</div>
-                <div class="sidebar-user-role" id="sidebarUserRole">Administrador</div>
+                <div class="sidebar-user-name" id="sidebarUserName">Usuario</div>
+                <div class="sidebar-user-role" id="sidebarUserRole">Rol</div>
             </div>
         </div>
 
@@ -798,18 +708,15 @@
             <a href="#" class="sidebar-nav-item active">
                 <i class="fas fa-th-large"></i> Dashboard
             </a>
-            <a href="#" class="sidebar-nav-item">
+            <a href="clientes.html" class="sidebar-nav-item">
+                <i class="fas fa-users"></i> Clientes
+            </a>
+            <a href="productos.html" class="sidebar-nav-item">
                 <i class="fas fa-box"></i> Productos
-                <span class="badge">12</span>
+                <span class="badge" id="badgeProductos">0</span>
             </a>
             <a href="#" class="sidebar-nav-item">
                 <i class="fas fa-shopping-cart"></i> Ventas
-            </a>
-            <a href="#" class="sidebar-nav-item">
-                <i class="fas fa-users"></i> Usuarios
-            </a>
-            <a href="#" class="sidebar-nav-item">
-                <i class="fas fa-truck"></i> Proveedores
             </a>
 
             <div class="sidebar-nav-title">Gestión</div>
@@ -849,10 +756,10 @@
                     <i class="fas fa-question-circle"></i>
                 </button>
                 <div class="header-user" id="headerUser">
-                    <div class="header-user-avatar" id="headerUserAvatar">E</div>
+                    <div class="header-user-avatar" id="headerUserAvatar">U</div>
                     <div>
-                        <div class="header-user-name" id="headerUserName">Erick Beltre</div>
-                        <div class="header-user-role" id="headerUserRole">Administrador</div>
+                        <div class="header-user-name" id="headerUserName">Usuario</div>
+                        <div class="header-user-role" id="headerUserRole">Rol</div>
                     </div>
                 </div>
             </div>
@@ -863,120 +770,69 @@
             <div class="stat-card fade-in">
                 <div class="stat-card-header">
                     <div>
-                        <div class="stat-card-number" id="totalVentas">$12,458</div>
-                        <div class="stat-card-label">Ventas Totales</div>
+                        <div class="stat-card-number" id="totalClientes">0</div>
+                        <div class="stat-card-label">Total Clientes</div>
                     </div>
-                    <div class="stat-card-icon green"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-card-icon green"><i class="fas fa-users"></i></div>
                 </div>
-                <span class="stat-card-change up"><i class="fas fa-arrow-up"></i> 12.5%</span>
             </div>
 
             <div class="stat-card fade-in">
                 <div class="stat-card-header">
                     <div>
-                        <div class="stat-card-number" id="totalProductos">1,284</div>
-                        <div class="stat-card-label">Productos</div>
+                        <div class="stat-card-number" id="totalUsuarios">0</div>
+                        <div class="stat-card-label">Total Usuarios</div>
                     </div>
-                    <div class="stat-card-icon blue"><i class="fas fa-box"></i></div>
+                    <div class="stat-card-icon blue"><i class="fas fa-user-cog"></i></div>
                 </div>
-                <span class="stat-card-change up"><i class="fas fa-arrow-up"></i> 8.2%</span>
             </div>
 
             <div class="stat-card fade-in">
                 <div class="stat-card-header">
                     <div>
-                        <div class="stat-card-number" id="totalUsuarios">24</div>
-                        <div class="stat-card-label">Usuarios Activos</div>
+                        <div class="stat-card-number" id="totalProductos">0</div>
+                        <div class="stat-card-label">Total Productos</div>
                     </div>
-                    <div class="stat-card-icon yellow"><i class="fas fa-users"></i></div>
+                    <div class="stat-card-icon yellow"><i class="fas fa-box"></i></div>
                 </div>
-                <span class="stat-card-change up"><i class="fas fa-arrow-up"></i> 3.1%</span>
             </div>
 
             <div class="stat-card fade-in">
                 <div class="stat-card-header">
                     <div>
-                        <div class="stat-card-number" id="totalVentasHoy">$1,234</div>
-                        <div class="stat-card-label">Ventas de Hoy</div>
+                        <div class="stat-card-number" id="totalVentas">0</div>
+                        <div class="stat-card-label">Total Ventas</div>
                     </div>
-                    <div class="stat-card-icon red"><i class="fas fa-clock"></i></div>
+                    <div class="stat-card-icon red"><i class="fas fa-shopping-cart"></i></div>
                 </div>
-                <span class="stat-card-change down"><i class="fas fa-arrow-down"></i> 2.4%</span>
             </div>
         </section>
 
         <!-- Cards -->
         <div class="cards-grid">
-            <!-- Actividades Recientes -->
+            <!-- Últimos Clientes -->
             <div class="card-custom">
                 <div class="card-custom-title">
-                    <i class="fas fa-clock"></i> Actividades Recientes
+                    <i class="fas fa-user-plus"></i> Últimos Clientes Registrados
                 </div>
-                <div class="activity-item">
-                    <span class="activity-dot green"></span>
-                    <div class="activity-content">
-                        <div class="activity-text">Nueva venta registrada #V-2024-001</div>
-                        <div class="activity-time">Hace 5 minutos</div>
+                <div id="ultimosClientes">
+                    <div class="empty-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando clientes...</p>
                     </div>
-                    <span class="activity-amount">+$1,200</span>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-dot blue"></span>
-                    <div class="activity-content">
-                        <div class="activity-text">Producto "Laptop Pro" actualizado</div>
-                        <div class="activity-time">Hace 23 minutos</div>
-                    </div>
-                    <span class="activity-amount" style="color: var(--color-info);">Editado</span>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-dot yellow"></span>
-                    <div class="activity-content">
-                        <div class="activity-text">Nuevo usuario registrado: María González</div>
-                        <div class="activity-time">Hace 1 hora</div>
-                    </div>
-                    <span class="activity-amount" style="color: var(--color-accent);">Nuevo</span>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-dot red"></span>
-                    <div class="activity-content">
-                        <div class="activity-text">Stock bajo en "Teclado RGB" (3 unidades)</div>
-                        <div class="activity-time">Hace 2 horas</div>
-                    </div>
-                    <span class="activity-amount" style="color: var(--color-danger);">¡Alerta!</span>
                 </div>
             </div>
 
-            <!-- Productos Destacados -->
+            <!-- Actividades Recientes -->
             <div class="card-custom">
                 <div class="card-custom-title">
-                    <i class="fas fa-star"></i> Productos Destacados
+                    <i class="fas fa-clock"></i> Resumen del Sistema
                 </div>
-                <div class="product-item">
-                    <div class="product-icon"><i class="fas fa-laptop"></i></div>
-                    <div class="product-info">
-                        <div class="product-name">Laptop Pro</div>
-                        <div class="product-stock">45 unidades</div>
+                <div id="resumenSistema">
+                    <div class="empty-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando información...</p>
                     </div>
-                    <div class="product-price">$1,299</div>
-                    <span class="product-status in-stock">En stock</span>
-                </div>
-                <div class="product-item">
-                    <div class="product-icon"><i class="fas fa-mouse"></i></div>
-                    <div class="product-info">
-                        <div class="product-name">Mouse Gamer X</div>
-                        <div class="product-stock">3 unidades</div>
-                    </div>
-                    <div class="product-price">$45</div>
-                    <span class="product-status low-stock">Stock bajo</span>
-                </div>
-                <div class="product-item">
-                    <div class="product-icon"><i class="fas fa-keyboard"></i></div>
-                    <div class="product-info">
-                        <div class="product-name">Teclado RGB</div>
-                        <div class="product-stock">0 unidades</div>
-                    </div>
-                    <div class="product-price">$89</div>
-                    <span class="product-status out-of-stock">Agotado</span>
                 </div>
             </div>
         </div>
@@ -993,6 +849,11 @@
     <!-- ============================================================ -->
     <script>
         // =============================================================
+        // CONFIGURACIÓN
+        // =============================================================
+        const API_URL = 'http://localhost:5285/api';
+
+        // =============================================================
         // SIDEBAR TOGGLE (MÓVIL)
         // =============================================================
         const sidebar = document.getElementById('sidebar');
@@ -1007,7 +868,6 @@
         toggleBtn.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
 
-        // Cerrar sidebar al hacer clic en un enlace (móvil)
         document.querySelectorAll('.sidebar-nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 if (window.innerWidth <= 992) {
@@ -1030,17 +890,14 @@
         // =============================================================
         function loadUserData() {
             const usuario = localStorage.getItem('usuario') || 'Usuario';
-            const rol = localStorage.getItem('rol') || 'Usuario';
+            const rol = localStorage.getItem('rol') || 'Rol';
 
-            // Obtener iniciales
             const initial = usuario.charAt(0).toUpperCase();
 
-            // Sidebar
             document.getElementById('sidebarUserName').textContent = usuario;
             document.getElementById('sidebarUserRole').textContent = rol;
             document.getElementById('sidebarUserAvatar').textContent = initial;
 
-            // Header
             document.getElementById('headerUserName').textContent = usuario;
             document.getElementById('headerUserRole').textContent = rol;
             document.getElementById('headerUserAvatar').textContent = initial;
@@ -1065,6 +922,157 @@
         if (!token) {
             window.location.href = 'login.html';
         }
+
+        // =============================================================
+        // CARGAR DATOS DEL DASHBOARD
+        // =============================================================
+        async function cargarDashboard() {
+            try {
+                // 1. Cargar clientes
+                const resClientes = await fetch(`${API_URL}/Clientes`);
+                const clientes = resClientes.ok ? await resClientes.json() : [];
+
+                // 2. Cargar usuarios
+                const resUsuarios = await fetch(`${API_URL}/Usuarios`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const usuarios = resUsuarios.ok ? await resUsuarios.json() : [];
+
+                // 3. Cargar productos
+                let productos = [];
+                try {
+                    const resProductos = await fetch(`${API_URL}/Productos`);
+                    if (resProductos.ok) productos = await resProductos.json();
+                } catch (e) {
+                    console.log('Endpoint de productos no disponible');
+                }
+
+                // 4. Cargar ventas
+                let ventas = [];
+                try {
+                    const resVentas = await fetch(`${API_URL}/Ventas`);
+                    if (resVentas.ok) ventas = await resVentas.json();
+                } catch (e) {
+                    console.log('Endpoint de ventas no disponible');
+                }
+
+                // =============================================================
+                // ACTUALIZAR STATS
+                // =============================================================
+                const clientesActivos = clientes.filter(c => c.estaActivo !== false);
+                document.getElementById('totalClientes').textContent = clientesActivos.length || 0;
+                document.getElementById('totalUsuarios').textContent = usuarios.length || 0;
+                document.getElementById('totalProductos').textContent = productos.length || 0;
+                document.getElementById('totalVentas').textContent = ventas.length || 0;
+
+                // ✅ Actualizar badge de productos en el menú
+                document.getElementById('badgeProductos').textContent = productos.length || 0;
+
+                // =============================================================
+                // ÚLTIMOS CLIENTES (máximo 5)
+                // =============================================================
+                const ultimosContainer = document.getElementById('ultimosClientes');
+
+                if (clientes.length === 0) {
+                    ultimosContainer.innerHTML = `
+                                    <div class="empty-state">
+                                        <i class="fas fa-users"></i>
+                                        <p>No hay clientes registrados</p>
+                                        <small class="text-muted">Agrega clientes desde el módulo de clientes</small>
+                                    </div>
+                                `;
+                } else {
+                    const ultimos = clientes.slice(-5).reverse();
+                    ultimosContainer.innerHTML = ultimos.map(c => `
+                                    <div class="client-item">
+                                        <div class="client-avatar">${c.nombreCompleto?.charAt(0).toUpperCase() || '?'}</div>
+                                        <div class="client-info">
+                                            <div class="client-name">${c.nombreCompleto || 'Sin nombre'}</div>
+                                            <div class="client-email">${c.email || 'Sin email'}</div>
+                                        </div>
+                                        <span class="client-status ${c.estaActivo !== false ? 'active' : 'inactive'}">
+                                            ${c.estaActivo !== false ? 'Activo' : 'Inactivo'}
+                                        </span>
+                                    </div>
+                                `).join('');
+                }
+
+                // =============================================================
+                // RESUMEN DEL SISTEMA
+                // =============================================================
+                const resumenContainer = document.getElementById('resumenSistema');
+
+                const clientesTotal = clientes.length || 0;
+                const usuariosTotal = usuarios.length || 0;
+                const productosTotal = productos.length || 0;
+                const ventasTotal = ventas.length || 0;
+
+                resumenContainer.innerHTML = `
+                                <div class="client-item">
+                                    <div class="client-avatar" style="background:rgba(46,204,113,0.12);color:#2ecc71;">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="client-info">
+                                        <div class="client-name">Clientes</div>
+                                        <div class="client-email">${clientesTotal} registrados</div>
+                                    </div>
+                                    <span style="font-weight:700;color:#2ecc71;">${clientesTotal}</span>
+                                </div>
+                                <div class="client-item">
+                                    <div class="client-avatar" style="background:rgba(52,152,219,0.12);color:#3498db;">
+                                        <i class="fas fa-user-cog"></i>
+                                    </div>
+                                    <div class="client-info">
+                                        <div class="client-name">Usuarios</div>
+                                        <div class="client-email">${usuariosTotal} registrados</div>
+                                    </div>
+                                    <span style="font-weight:700;color:#3498db;">${usuariosTotal}</span>
+                                </div>
+                                <div class="client-item">
+                                    <div class="client-avatar" style="background:rgba(241,196,15,0.12);color:#f1c40f;">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <div class="client-info">
+                                        <div class="client-name">Productos</div>
+                                        <div class="client-email">${productosTotal} registrados</div>
+                                    </div>
+                                    <span style="font-weight:700;color:#f1c40f;">${productosTotal}</span>
+                                </div>
+                                <div class="client-item">
+                                    <div class="client-avatar" style="background:rgba(231,76,60,0.12);color:#e74c3c;">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="client-info">
+                                        <div class="client-name">Ventas</div>
+                                        <div class="client-email">${ventasTotal} registradas</div>
+                                    </div>
+                                    <span style="font-weight:700;color:#e74c3c;">${ventasTotal}</span>
+                                </div>
+                            `;
+
+            } catch (error) {
+                console.error('Error al cargar dashboard:', error);
+                document.getElementById('ultimosClientes').innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle" style="color:#e74c3c;"></i>
+                                    <p>Error al cargar datos</p>
+                                    <small class="text-muted">Verifica que el servidor esté ejecutándose</small>
+                                </div>
+                            `;
+                document.getElementById('resumenSistema').innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle" style="color:#e74c3c;"></i>
+                                    <p>Error al cargar datos</p>
+                                    <small class="text-muted">Verifica que el servidor esté ejecutándose</small>
+                                </div>
+                            `;
+            }
+        }
+
+        // =============================================================
+        // EJECUTAR AL CARGAR LA PÁGINA
+        // =============================================================
+        document.addEventListener('DOMContentLoaded', cargarDashboard);
 
         // =============================================================
         // CONSOLA

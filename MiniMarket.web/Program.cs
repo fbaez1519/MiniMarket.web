@@ -36,6 +36,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
 
 // ============================================
 // FLUENTVALIDATION - VALIDADORES

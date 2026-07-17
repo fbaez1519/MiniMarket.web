@@ -6,7 +6,7 @@ namespace Minimarket.Domain.Entities
     public class Producto : BaseEntity
     {
         // ═══════════════════════════════════════════════════════
-        // 📌 PROPIEDADES NORMALES (ya las tienes)
+        // 📌 PROPIEDADES NORMALES
         // ═══════════════════════════════════════════════════════
         public string Codigo { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
@@ -28,15 +28,20 @@ namespace Minimarket.Domain.Entities
         public string? PaisOrigen { get; set; }
         public decimal Impuesto { get; set; } = 18;
 
+        /// <summary>
+        /// Indica si el producto está activo
+        /// </summary>
+        public bool EstaActivo { get; set; } = true;
+
         // ═══════════════════════════════════════════════════════
-        // 🔗 PROPIEDADES DE NAVEGACIÓN (¡AGREGAR ESTAS!)
+        // 🔗 PROPIEDADES DE NAVEGACIÓN
         // ═══════════════════════════════════════════════════════
         public virtual Categoria Categoria { get; set; } = null!;
         public virtual ICollection<DetalleVenta> DetalleVentas { get; set; } = new List<DetalleVenta>();
         public virtual ICollection<DetalleCompra> DetalleCompras { get; set; } = new List<DetalleCompra>();
 
         // ═══════════════════════════════════════════════════════
-        // 📌 MÉTODOS (ya los tienes)
+        // 📌 MÉTODOS
         // ═══════════════════════════════════════════════════════
         public bool TieneBajoStock() => Stock <= StockMinimo;
         public bool EstaAgotado() => Stock <= 0;

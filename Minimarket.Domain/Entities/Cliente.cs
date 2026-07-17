@@ -68,6 +68,11 @@ namespace Minimarket.Domain.Entities
         /// </summary>
         public DateTime? FechaNacimiento { get; set; }
 
+        /// <summary>
+        /// Indica si el cliente está activo
+        /// </summary>
+        public bool EstaActivo { get; set; } = true;
+
         // 🔗 RELACIONES
         public virtual ICollection<Venta> Ventas { get; set; } = new List<Venta>();
 

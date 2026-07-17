@@ -1,5 +1,3 @@
-using AutoMapper;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using MiniMarket.web.DTOs;
 using MiniMarket.web.Services;
@@ -11,15 +9,15 @@ namespace MiniMarket.web.Controllers;
 public class ProductosController : ControllerBase
 {
     private readonly IProductoService _service;
-    private readonly IValidator<ProductoDTO> _validator;
 
-    public ProductosController(IProductoService service, IValidator<ProductoDTO> validator)
+    public ProductosController(IProductoService service)
     {
         _service = service;
-        _validator = validator;
     }
 
-    // GET: api/productos
+    /// <summary>
+    /// Obtiene todos los productos
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -27,52 +25,102 @@ public class ProductosController : ControllerBase
         return Ok(productos);
     }
 
-    // GET: api/productos/5
+    /// <summary>
+    /// Obtiene un producto por su ID
+    /// </summary>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var producto = await _service.GetByIdAsync(id);
         if (producto == null)
-            return NotFound();
+            return NotFound(new { mensaje = $"Producto con ID {id} no encontrado" });
 
         return Ok(producto);
     }
 
-    // POST: api/productos
+    /// <summary>
+    /// Obtiene un producto por su código
+    /// </summary>
+    [HttpGet("codigo/{codigo}")]
+    public async Task<IActionResult> GetByCodigo(string codigo)
+    {
+        var producto = await _service.GetByCodigoAsync(codigo);
+        if (producto == null)
+            return NotFound(new { mensaje = $"Producto con código {codigo} no encontrado" });
+
+        return Ok(producto);
+    }
+
+    /// <summary>
+    /// Crea un nuevo producto
+    /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] ProductoDTO producto)
+    public async Task<IActionResult> Create([FromBody] ProductoCreateDTO productoDto)
     {
-        var result = await _validator.ValidateAsync(producto);
-        if (!result.IsValid)
-            return BadRequest(result.Errors);
-
-        var nuevo = await _service.CreateAsync(producto);
-        return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
+        try
+        {
+            var nuevo = await _service.CreateAsync(productoDto);
+            return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
     }
 
-    // PUT: api/productos/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] ProductoDTO producto)
+    /// <summary>
+    /// Actualiza un producto existente
+    /// </summary>
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] ProductoUpdateDTO productoDto)
     {
-        var result = await _validator.ValidateAsync(producto);
-        if (!result.IsValid)
-            return BadRequest(result.Errors);
-
-        var actualizado = await _service.UpdateAsync(id, producto);
-        if (actualizado == null)
-            return NotFound();
-
-        return Ok(actualizado);
+        try
+        {
+            var actualizado = await _service.UpdateAsync(productoDto);
+            return Ok(actualizado);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
     }
 
-    // DELETE: api/productos/5
+    /// <summary>
+    /// Elimina un producto
+    /// </summary>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var eliminado = await _service.DeleteAsync(id);
         if (!eliminado)
-            return NotFound();
+            return NotFound(new { mensaje = $"Producto con ID {id} no encontrado" });
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Desactiva un producto
+    /// </summary>
+    [HttpPatch("{id}/desactivar")]
+    public async Task<IActionResult> Desactivar(int id)
+    {
+        var desactivado = await _service.DesactivarAsync(id);
+        if (!desactivado)
+            return NotFound(new { mensaje = $"Producto con ID {id} no encontrado" });
+
+        return Ok(new { mensaje = "Producto desactivado exitosamente" });
+    }
+
+    /// <summary>
+    /// Activa un producto
+    /// </summary>
+    [HttpPatch("{id}/activar")]
+    public async Task<IActionResult> Activar(int id)
+    {
+        var activado = await _service.ActivarAsync(id);
+        if (!activado)
+            return NotFound(new { mensaje = $"Producto con ID {id} no encontrado" });
+
+        return Ok(new { mensaje = "Producto activado exitosamente" });
     }
 }
