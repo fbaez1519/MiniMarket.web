@@ -69,7 +69,7 @@ public class AuthController : ControllerBase
         // Crear el nuevo usuario
         var usuario = new Usuario
         {
-            NombreCompleto = register.Name,
+            NombreCompleto = register.NombreCompleto,
             Email = register.Email,
             Username = register.Username ?? register.Email.Split('@')[0],
             PasswordHash = register.Password, // En producción usar hash

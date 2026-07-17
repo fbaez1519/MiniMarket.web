@@ -4,299 +4,1075 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MiniMarket - Dashboard</title>
-    
+
+    <!-- ===== CDN ===== -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --color-primary: #1a2a4a;
+            --color-primary-light: #2c4a7a;
+            --color-primary-dark: #0f1a2e;
+            --color-secondary: #2ecc71;
+            --color-secondary-dark: #27ae60;
+            --color-accent: #f1c40f;
+            --color-danger: #e74c3c;
+            --color-warning: #f39c12;
+            --color-info: #3498db;
+            --color-text: #2c3e50;
+            --color-text-light: #7f8c8d;
+            --color-bg: #f0f2f5;
+            --color-card: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 15px 50px rgba(0, 0, 0, 0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: #f0f2f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--color-bg);
+            min-height: 100vh;
+            display: flex;
         }
-        
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 15px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        /* ============================================================ */
+        /* SIDEBAR                                                      */
+        /* ============================================================ */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--color-primary-dark), var(--color-primary), var(--color-primary-light));
+            color: #fff;
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: transform var(--transition);
+            z-index: 1000;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
         }
-        
-        .navbar-custom .navbar-brand {
-            color: white;
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(145deg, var(--color-secondary), var(--color-secondary-dark));
+            border-radius: 12px;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .sidebar-logo-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+            .sidebar-logo-text span {
+                color: var(--color-secondary);
+            }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-sm);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--color-secondary), var(--color-secondary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
-        
-        .navbar-custom .nav-link {
-            color: rgba(255,255,255,0.8) !important;
-            transition: all 0.3s ease;
+
+        .sidebar-user-info {
+            flex: 1;
+            min-width: 0;
         }
-        
-        .navbar-custom .nav-link:hover {
-            color: white !important;
-            transform: translateY(-2px);
+
+        .sidebar-user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
-        .user-info {
-            color: white;
-            padding: 8px 15px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
+
+        .sidebar-user-role {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
-        .user-info i {
-            margin-right: 8px;
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
         }
-        
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+
+        .sidebar-nav-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.4;
+            margin: 1.5rem 0 0.8rem 0.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0.7rem 1rem;
+            border-radius: var(--radius-sm);
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all var(--transition);
+            cursor: pointer;
+            margin-bottom: 2px;
+            font-weight: 500;
+            font-size: 0.88rem;
             border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
         }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+            .sidebar-nav-item:hover {
+                background: rgba(255, 255, 255, 0.08);
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+            .sidebar-nav-item.active {
+                background: rgba(46, 204, 113, 0.15);
+                color: var(--color-secondary);
+                box-shadow: inset 3px 0 0 var(--color-secondary);
+            }
+
+            .sidebar-nav-item i {
+                width: 20px;
+                text-align: center;
+                font-size: 1rem;
+            }
+
+            .sidebar-nav-item .badge {
+                margin-left: auto;
+                background: var(--color-danger);
+                font-size: 0.65rem;
+                padding: 2px 8px;
+                border-radius: 20px;
+            }
+
+        .sidebar-footer {
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: auto;
         }
-        
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+
+            .sidebar-footer .sidebar-nav-item {
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.82rem;
+            }
+
+                .sidebar-footer .sidebar-nav-item:hover {
+                    color: var(--color-danger);
+                    background: rgba(231, 76, 60, 0.1);
+                }
+
+        /* ============================================================ */
+        /* MAIN CONTENT                                                 */
+        /* ============================================================ */
+        .main-content {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+            min-height: 100vh;
         }
-        
-        .card-icon.products { color: #667eea; }
-        .card-icon.users { color: #2ecc71; }
-        .card-icon.sales { color: #f39c12; }
-        .card-icon.reports { color: #e74c3c; }
-        
-        .stats-number {
-            font-size: 2rem;
+
+        /* Header */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .main-header-left h1 {
+            font-size: 1.6rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--color-primary);
+            margin: 0;
         }
-        
-        .stats-label {
-            color: #7f8c8d;
+
+        .main-header-left p {
+            color: var(--color-text-light);
+            margin: 0;
             font-size: 0.9rem;
         }
-        
-        .welcome-message {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+        .main-header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
-        
-        .welcome-message h3 {
-            color: #2c3e50;
-            font-weight: 700;
+
+        .header-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: var(--color-card);
+            box-shadow: var(--shadow-sm);
+            color: var(--color-text-light);
+            font-size: 1rem;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
-        
-        .welcome-message p {
-            color: #7f8c8d;
-        }
-        
-        .btn-logout {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
+
+            .header-btn:hover {
+                background: var(--color-primary);
+                color: #fff;
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .header-btn .notification-dot {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                width: 8px;
+                height: 8px;
+                background: var(--color-danger);
+                border-radius: 50%;
+                border: 2px solid var(--color-card);
+            }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.4rem 1rem 0.4rem 0.8rem;
+            background: var(--color-card);
+            border-radius: 50px;
+            box-shadow: var(--shadow-sm);
             cursor: pointer;
+            transition: all var(--transition);
+            border: none;
         }
-        
-        .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
+
+            .header-user:hover {
+                box-shadow: var(--shadow-md);
+                transform: translateY(-2px);
+            }
+
+        .header-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--color-secondary), var(--color-secondary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #fff;
         }
-        
-        .sidebar-link {
-            display: block;
-            padding: 12px 20px;
-            color: #2c3e50;
-            text-decoration: none;
+
+        .header-user-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-primary);
+        }
+
+        .header-user-role {
+            font-size: 0.65rem;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================================ */
+        /* STATS CARDS                                                  */
+        /* ============================================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-card);
+            padding: 1.5rem 1.2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+            .stat-card:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-md);
+            }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+            .stat-card-icon.green {
+                background: rgba(46, 204, 113, 0.12);
+                color: var(--color-secondary);
+            }
+
+            .stat-card-icon.blue {
+                background: rgba(52, 152, 219, 0.12);
+                color: var(--color-info);
+            }
+
+            .stat-card-icon.yellow {
+                background: rgba(241, 196, 15, 0.12);
+                color: var(--color-accent);
+            }
+
+            .stat-card-icon.red {
+                background: rgba(231, 76, 60, 0.12);
+                color: var(--color-danger);
+            }
+
+        .stat-card-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-top: 0.5rem;
+        }
+
+        .stat-card-label {
+            color: var(--color-text-light);
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        .stat-card-change {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 0.3rem;
+        }
+
+            .stat-card-change.up {
+                color: var(--color-secondary);
+                background: rgba(46, 204, 113, 0.1);
+            }
+
+            .stat-card-change.down {
+                color: var(--color-danger);
+                background: rgba(231, 76, 60, 0.1);
+            }
+
+        /* ============================================================ */
+        /* CARDS                                                        */
+        /* ============================================================ */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+            .section-header h3 {
+                font-weight: 700;
+                font-size: 1.2rem;
+                color: var(--color-primary);
+                margin: 0;
+            }
+
+            .section-header .btn-outline {
+                padding: 0.4rem 1.2rem;
+                border-radius: 50px;
+                border: 2px solid #e8edf3;
+                background: transparent;
+                font-weight: 600;
+                font-size: 0.8rem;
+                color: var(--color-text-light);
+                transition: all var(--transition);
+                cursor: pointer;
+            }
+
+                .section-header .btn-outline:hover {
+                    border-color: var(--color-primary);
+                    color: var(--color-primary);
+                    background: rgba(26, 42, 74, 0.04);
+                }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-custom {
+            background: var(--color-card);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all var(--transition);
+        }
+
+            .card-custom:hover {
+                box-shadow: var(--shadow-md);
+            }
+
+        .card-custom-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .card-custom-title i {
+                color: var(--color-secondary);
+            }
+
+        /* Tabla de actividades */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+            .activity-item:last-child {
+                border-bottom: none;
+            }
+
+        .activity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+            .activity-dot.green {
+                background: var(--color-secondary);
+            }
+
+            .activity-dot.blue {
+                background: var(--color-info);
+            }
+
+            .activity-dot.yellow {
+                background: var(--color-accent);
+            }
+
+            .activity-dot.red {
+                background: var(--color-danger);
+            }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-primary);
+        }
+
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--color-text-light);
+        }
+
+        .activity-amount {
+            font-weight: 700;
+            color: var(--color-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Productos rápidos */
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+            .product-item:last-child {
+                border-bottom: none;
+            }
+
+        .product-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 10px;
-            transition: all 0.3s ease;
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            background: rgba(46, 204, 113, 0.08);
+            color: var(--color-secondary);
         }
-        
-        .sidebar-link:hover {
-            background: #f0f2f5;
-            color: #667eea;
-            transform: translateX(5px);
+
+        .product-info {
+            flex: 1;
         }
-        
-        .sidebar-link i {
-            width: 25px;
-            color: #667eea;
+
+        .product-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-primary);
         }
-        
-        .sidebar-link.active {
-            background: #667eea;
-            color: white;
+
+        .product-stock {
+            font-size: 0.7rem;
+            color: var(--color-text-light);
         }
-        
-        .sidebar-link.active i {
-            color: white;
+
+        .product-price {
+            font-weight: 700;
+            color: var(--color-primary);
+            font-size: 0.9rem;
         }
+
+        .product-status {
+            font-size: 0.6rem;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+            .product-status.in-stock {
+                color: var(--color-secondary);
+                background: rgba(46, 204, 113, 0.1);
+            }
+
+            .product-status.low-stock {
+                color: var(--color-warning);
+                background: rgba(243, 156, 18, 0.1);
+            }
+
+            .product-status.out-of-stock {
+                color: var(--color-danger);
+                background: rgba(231, 76, 60, 0.1);
+            }
+
+        /* ============================================================ */
+        /* RESPONSIVE                                                   */
+        /* ============================================================ */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1100;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition);
+        }
+
+            .sidebar-toggle:hover {
+                transform: scale(1.05);
+            }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                transform: translateX(-100%);
+                width: 280px;
+                border-radius: 0 20px 20px 0;
+            }
+
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            .sidebar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .main-content {
+                padding: 1.5rem 1.2rem;
+                padding-top: 5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .main-header-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .card-custom {
+                padding: 1rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--color-primary-light);
+            }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+            .fade-in:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+
+            .fade-in:nth-child(3) {
+                animation-delay: 0.2s;
+            }
+
+            .fade-in:nth-child(4) {
+                animation-delay: 0.3s;
+            }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-store"></i> MiniMarket
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR TOGGLE (MÓVIL)                                       -->
+    <!-- ============================================================ -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR OVERLAY (MÓVIL)                                      -->
+    <!-- ============================================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR                                                      -->
+    <!-- ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="sidebar-logo-text">Mini<span>Market</span></div>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar" id="sidebarUserAvatar">E</div>
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name" id="sidebarUserName">Erick Beltre</div>
+                <div class="sidebar-user-role" id="sidebarUserRole">Administrador</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-title">Menú Principal</div>
+
+            <a href="#" class="sidebar-nav-item active">
+                <i class="fas fa-th-large"></i> Dashboard
             </a>
-            <div class="d-flex align-items-center gap-3">
-                <span class="user-info">
-                    <i class="fas fa-user-circle"></i>
-                    <span id="userName">Usuario</span>
-                    <span class="badge bg-light text-dark ms-2" id="userRole">Rol</span>
-                </span>
-                <button class="btn-logout" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Salir
+            <a href="#" class="sidebar-nav-item">
+                <i class="fas fa-box"></i> Productos
+                <span class="badge">12</span>
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="fas fa-shopping-cart"></i> Ventas
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="fas fa-users"></i> Usuarios
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="fas fa-truck"></i> Proveedores
+            </a>
+
+            <div class="sidebar-nav-title">Gestión</div>
+
+            <a href="#" class="sidebar-nav-item">
+                <i class="fas fa-file-invoice"></i> Reportes
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="fas fa-cog"></i> Configuración
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="sidebar-nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT                                                 -->
+    <!-- ============================================================ -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="main-header">
+            <div class="main-header-left">
+                <h1>Dashboard</h1>
+                <p><i class="fas fa-calendar-alt"></i> <span id="currentDate"></span></p>
+            </div>
+            <div class="main-header-right">
+                <button class="header-btn" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
                 </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Contenido -->
-    <div class="container mt-4">
-        <!-- Mensaje de bienvenida -->
-        <div class="welcome-message">
-            <h3 id="welcomeText">¡Bienvenido, Usuario!</h3>
-            <p>Panel de control del sistema MiniMarket. Aquí puedes gestionar todos los módulos del sistema.</p>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="row mb-4">
-            <div class="col-md-3 col-6">
-                <div class="card text-center p-3">
-                    <div class="card-icon products">
-                        <i class="fas fa-box"></i>
+                <button class="header-btn" title="Ayuda">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+                <div class="header-user" id="headerUser">
+                    <div class="header-user-avatar" id="headerUserAvatar">E</div>
+                    <div>
+                        <div class="header-user-name" id="headerUserName">Erick Beltre</div>
+                        <div class="header-user-role" id="headerUserRole">Administrador</div>
                     </div>
-                    <div class="stats-number" id="totalProducts">0</div>
-                    <div class="stats-label">Productos</div>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
-                <div class="card text-center p-3">
-                    <div class="card-icon users">
-                        <i class="fas fa-users"></i>
+        </header>
+
+        <!-- Stats -->
+        <section class="stats-grid">
+            <div class="stat-card fade-in">
+                <div class="stat-card-header">
+                    <div>
+                        <div class="stat-card-number" id="totalVentas">$12,458</div>
+                        <div class="stat-card-label">Ventas Totales</div>
                     </div>
-                    <div class="stats-number" id="totalUsers">0</div>
-                    <div class="stats-label">Usuarios</div>
+                    <div class="stat-card-icon green"><i class="fas fa-dollar-sign"></i></div>
+                </div>
+                <span class="stat-card-change up"><i class="fas fa-arrow-up"></i> 12.5%</span>
+            </div>
+
+            <div class="stat-card fade-in">
+                <div class="stat-card-header">
+                    <div>
+                        <div class="stat-card-number" id="totalProductos">1,284</div>
+                        <div class="stat-card-label">Productos</div>
+                    </div>
+                    <div class="stat-card-icon blue"><i class="fas fa-box"></i></div>
+                </div>
+                <span class="stat-card-change up"><i class="fas fa-arrow-up"></i> 8.2%</span>
+            </div>
+
+            <div class="stat-card fade-in">
+                <div class="stat-card-header">
+                    <div>
+                        <div class="stat-card-number" id="totalUsuarios">24</div>
+                        <div class="stat-card-label">Usuarios Activos</div>
+                    </div>
+                    <div class="stat-card-icon yellow"><i class="fas fa-users"></i></div>
+                </div>
+                <span class="stat-card-change up"><i class="fas fa-arrow-up"></i> 3.1%</span>
+            </div>
+
+            <div class="stat-card fade-in">
+                <div class="stat-card-header">
+                    <div>
+                        <div class="stat-card-number" id="totalVentasHoy">$1,234</div>
+                        <div class="stat-card-label">Ventas de Hoy</div>
+                    </div>
+                    <div class="stat-card-icon red"><i class="fas fa-clock"></i></div>
+                </div>
+                <span class="stat-card-change down"><i class="fas fa-arrow-down"></i> 2.4%</span>
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <div class="cards-grid">
+            <!-- Actividades Recientes -->
+            <div class="card-custom">
+                <div class="card-custom-title">
+                    <i class="fas fa-clock"></i> Actividades Recientes
+                </div>
+                <div class="activity-item">
+                    <span class="activity-dot green"></span>
+                    <div class="activity-content">
+                        <div class="activity-text">Nueva venta registrada #V-2024-001</div>
+                        <div class="activity-time">Hace 5 minutos</div>
+                    </div>
+                    <span class="activity-amount">+$1,200</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-dot blue"></span>
+                    <div class="activity-content">
+                        <div class="activity-text">Producto "Laptop Pro" actualizado</div>
+                        <div class="activity-time">Hace 23 minutos</div>
+                    </div>
+                    <span class="activity-amount" style="color: var(--color-info);">Editado</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-dot yellow"></span>
+                    <div class="activity-content">
+                        <div class="activity-text">Nuevo usuario registrado: María González</div>
+                        <div class="activity-time">Hace 1 hora</div>
+                    </div>
+                    <span class="activity-amount" style="color: var(--color-accent);">Nuevo</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-dot red"></span>
+                    <div class="activity-content">
+                        <div class="activity-text">Stock bajo en "Teclado RGB" (3 unidades)</div>
+                        <div class="activity-time">Hace 2 horas</div>
+                    </div>
+                    <span class="activity-amount" style="color: var(--color-danger);">¡Alerta!</span>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
-                <div class="card text-center p-3">
-                    <div class="card-icon sales">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="stats-number" id="totalSales">0</div>
-                    <div class="stats-label">Ventas</div>
+
+            <!-- Productos Destacados -->
+            <div class="card-custom">
+                <div class="card-custom-title">
+                    <i class="fas fa-star"></i> Productos Destacados
                 </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="card text-center p-3">
-                    <div class="card-icon reports">
-                        <i class="fas fa-file-alt"></i>
+                <div class="product-item">
+                    <div class="product-icon"><i class="fas fa-laptop"></i></div>
+                    <div class="product-info">
+                        <div class="product-name">Laptop Pro</div>
+                        <div class="product-stock">45 unidades</div>
                     </div>
-                    <div class="stats-number" id="totalReports">0</div>
-                    <div class="stats-label">Reportes</div>
+                    <div class="product-price">$1,299</div>
+                    <span class="product-status in-stock">En stock</span>
+                </div>
+                <div class="product-item">
+                    <div class="product-icon"><i class="fas fa-mouse"></i></div>
+                    <div class="product-info">
+                        <div class="product-name">Mouse Gamer X</div>
+                        <div class="product-stock">3 unidades</div>
+                    </div>
+                    <div class="product-price">$45</div>
+                    <span class="product-status low-stock">Stock bajo</span>
+                </div>
+                <div class="product-item">
+                    <div class="product-icon"><i class="fas fa-keyboard"></i></div>
+                    <div class="product-info">
+                        <div class="product-name">Teclado RGB</div>
+                        <div class="product-stock">0 unidades</div>
+                    </div>
+                    <div class="product-price">$89</div>
+                    <span class="product-status out-of-stock">Agotado</span>
                 </div>
             </div>
         </div>
 
-        <!-- Módulos -->
-        <div class="row">
-            <div class="col-md-3 col-6 mb-3">
-                <a href="#" class="sidebar-link text-center p-4" style="background: #f8f9fa; border-radius: 15px;">
-                    <i class="fas fa-box fa-2x d-block mb-2" style="color: #667eea;"></i>
-                    <span>Productos</span>
-                </a>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <a href="#" class="sidebar-link text-center p-4" style="background: #f8f9fa; border-radius: 15px;">
-                    <i class="fas fa-users fa-2x d-block mb-2" style="color: #2ecc71;"></i>
-                    <span>Usuarios</span>
-                </a>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <a href="#" class="sidebar-link text-center p-4" style="background: #f8f9fa; border-radius: 15px;">
-                    <i class="fas fa-shopping-cart fa-2x d-block mb-2" style="color: #f39c12;"></i>
-                    <span>Ventas</span>
-                </a>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <a href="#" class="sidebar-link text-center p-4" style="background: #f8f9fa; border-radius: 15px;">
-                    <i class="fas fa-chart-bar fa-2x d-block mb-2" style="color: #e74c3c;"></i>
-                    <span>Reportes</span>
-                </a>
-            </div>
+        <!-- Footer -->
+        <div style="text-align: center; color: var(--color-text-light); font-size: 0.8rem; padding-top: 1rem; border-top: 1px solid #e8edf3;">
+            <i class="fas fa-copyright"></i> 2026 MiniMarket - Sistema de Gestión v2.0
         </div>
-    </div>
 
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- SCRIPTS                                                      -->
+    <!-- ============================================================ -->
     <script>
-        // ============================================
-        // CARGAR DATOS DEL USUARIO
-        // ============================================
+        // =============================================================
+        // SIDEBAR TOGGLE (MÓVIL)
+        // =============================================================
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggleBtn = document.getElementById('sidebarToggle');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        toggleBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Cerrar sidebar al hacer clic en un enlace (móvil)
+        document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                }
+            });
+        });
+
+        // =============================================================
+        // FECHA ACTUAL
+        // =============================================================
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent =
+            now.toLocaleDateString('es-ES', options);
+
+        // =============================================================
+        // CARGAR DATOS DEL USUARIO DESDE localStorage
+        // =============================================================
         function loadUserData() {
-            const usuario = localStorage.getItem('usuario');
-            const rol = localStorage.getItem('rol');
-            const token = localStorage.getItem('token');
+            const usuario = localStorage.getItem('usuario') || 'Usuario';
+            const rol = localStorage.getItem('rol') || 'Usuario';
 
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
+            // Obtener iniciales
+            const initial = usuario.charAt(0).toUpperCase();
 
-            document.getElementById('userName').textContent = usuario || 'Usuario';
-            document.getElementById('userRole').textContent = rol || 'Sin rol';
-            document.getElementById('welcomeText').textContent = `¡Bienvenido, ${usuario || 'Usuario'}!`;
+            // Sidebar
+            document.getElementById('sidebarUserName').textContent = usuario;
+            document.getElementById('sidebarUserRole').textContent = rol;
+            document.getElementById('sidebarUserAvatar').textContent = initial;
+
+            // Header
+            document.getElementById('headerUserName').textContent = usuario;
+            document.getElementById('headerUserRole').textContent = rol;
+            document.getElementById('headerUserAvatar').textContent = initial;
         }
 
-        // ============================================
-        // CARGAR ESTADÍSTICAS
-        // ============================================
-        async function loadStats() {
-            const API_URL = localStorage.getItem('apiUrl') || 'http://localhost:5285';
-            const token = localStorage.getItem('token');
+        loadUserData();
 
-            try {
-                // Aquí puedes hacer llamadas a la API para obtener estadísticas reales
-                // Por ahora solo mostramos datos de ejemplo
-                document.getElementById('totalProducts').textContent = '12';
-                document.getElementById('totalUsers').textContent = '5';
-                document.getElementById('totalSales').textContent = '48';
-                document.getElementById('totalReports').textContent = '3';
-            } catch (error) {
-                console.error('Error cargando estadísticas:', error);
-            }
-        }
-
-        // ============================================
+        // =============================================================
         // CERRAR SESIÓN
-        // ============================================
-        function logout() {
+        // =============================================================
+        document.getElementById('logoutBtn').addEventListener('click', function () {
             localStorage.removeItem('token');
             localStorage.removeItem('usuario');
             localStorage.removeItem('rol');
             window.location.href = 'login.html';
+        });
+
+        // =============================================================
+        // REDIRECCIONAR A LOGIN SI NO HAY TOKEN
+        // =============================================================
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
         }
 
-        // ============================================
-        // INICIALIZAR
-        // ============================================
-        loadUserData();
-        loadStats();
-
-        console.log('%c🛒 MiniMarket Dashboard', 'font-size:18px; font-weight:bold; color:#667eea;');
-        console.log('📌 Usuario:', localStorage.getItem('usuario'));
-        console.log('📌 Rol:', localStorage.getItem('rol'));
+        // =============================================================
+        // CONSOLA
+        // =============================================================
+        console.log('%c🛒 MiniMarket - Dashboard', 'font-size:18px; font-weight:bold; color:#2ecc71;');
+        console.log('%c👤 Usuario: ' + localStorage.getItem('usuario'), 'font-weight:bold;');
+        console.log('%c🔑 Rol: ' + localStorage.getItem('rol'), 'font-weight:bold;');
+        console.log('%c🔗 API: http://localhost:5285', 'color:#7f8c8d;');
     </script>
 
 </body>
