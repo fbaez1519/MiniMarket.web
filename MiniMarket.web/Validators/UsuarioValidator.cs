@@ -7,7 +7,7 @@ public class UsuarioValidator : AbstractValidator<UsuarioDTO>
 {
     public UsuarioValidator()
     {
-        RuleFor(u => u.Nombre)
+        RuleFor(u => u.NombreCompleto)
             .NotEmpty().WithMessage("El nombre es obligatorio")
             .MaximumLength(50).WithMessage("El nombre no puede tener más de 50 caracteres");
 
