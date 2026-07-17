@@ -37,6 +37,7 @@ builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 // ============================================
 // FLUENTVALIDATION - VALIDADORES
@@ -90,7 +91,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // ============================================
-// 🔥 CORS DEBE IR ANTES DE AUTENTICACIÓN
+// CORS DEBE IR ANTES DE AUTENTICACIÓN
 // ============================================
 app.UseCors("AllowAll");
 

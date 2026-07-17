@@ -37,6 +37,11 @@ namespace Minimarket.Domain.Entities
         /// </summary>
         public int Orden { get; set; } = 0;
 
+        /// <summary>
+        /// Indica si la categoría está activa
+        /// </summary>
+        public bool EstaActivo { get; set; } = true;
+
         // 🔗 RELACIONES
         public virtual Categoria? CategoriaPadre { get; set; }
         public virtual ICollection<Categoria> SubCategorias { get; set; } = new List<Categoria>();
