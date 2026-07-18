@@ -13,6 +13,12 @@ namespace Minimarket.Domain.Entities
         public string Username { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string Rol { get; set; } = "Vendedor";
+
+        /// <summary>
+        /// Indica si el usuario está activo
+        /// </summary>
+        public bool EstaActivo { get; set; } = true;  
+
         public DateTime? UltimoAcceso { get; set; }
         public bool DebeCambiarPassword { get; set; } = false;
         public int IntentosFallidos { get; set; } = 0;

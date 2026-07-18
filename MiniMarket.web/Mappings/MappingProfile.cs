@@ -17,6 +17,10 @@ public class MappingProfile : Profile
 
         // Usuario 
         CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+        CreateMap<Usuario, UsuarioCreateDTO>().ReverseMap();  
+        CreateMap<Usuario, UsuarioUpdateDTO>().ReverseMap();  
+        CreateMap<UsuarioCreateDTO, Usuario>();               
+        CreateMap<UsuarioUpdateDTO, Usuario>();              
 
         // Venta
         CreateMap<Venta, VentaDTO>().ReverseMap();
@@ -29,7 +33,7 @@ public class MappingProfile : Profile
         CreateMap<ClienteCreateDTO, Cliente>();
         CreateMap<ClienteUpdateDTO, Cliente>();
 
-        // ✅ Categoría 
+        // Categoría
         CreateMap<Categoria, CategoriaDTO>().ReverseMap();
         CreateMap<Categoria, CategoriaCreateDTO>().ReverseMap();
         CreateMap<Categoria, CategoriaUpdateDTO>().ReverseMap();

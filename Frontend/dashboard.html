@@ -391,6 +391,10 @@
             background: rgba(155, 89, 182, 0.12);
             color: #8e44ad;
         }
+        .stat-card-icon.orange {
+            background: rgba(243, 156, 18, 0.12);
+            color: #d35400;
+        }
 
         .stat-card-number {
             font-size: 1.8rem;
@@ -681,6 +685,7 @@
             </a>
             <a href="clientes.html" class="sidebar-nav-item">
                 <i class="fas fa-users"></i> Clientes
+                <span class="badge" id="badgeClientes">0</span>
             </a>
             <a href="productos.html" class="sidebar-nav-item">
                 <i class="fas fa-box"></i> Productos
@@ -689,6 +694,10 @@
             <a href="categorias.html" class="sidebar-nav-item">
                 <i class="fas fa-tags"></i> Categorías
                 <span class="badge" id="badgeCategorias">0</span>
+            </a>
+            <a href="usuarios.html" class="sidebar-nav-item">
+                <i class="fas fa-user-cog"></i> Usuarios
+                <span class="badge" id="badgeUsuarios">0</span>
             </a>
             <a href="#" class="sidebar-nav-item">
                 <i class="fas fa-shopping-cart"></i> Ventas
@@ -961,8 +970,10 @@
                 document.getElementById('totalVentas').textContent = ventas.length || 0;
 
                 // Actualizar badges del menú
+                document.getElementById('badgeClientes').textContent = clientesActivos.length || 0;
                 document.getElementById('badgeProductos').textContent = productos.length || 0;
                 document.getElementById('badgeCategorias').textContent = categorias.length || 0;
+                document.getElementById('badgeUsuarios').textContent = usuarios.length || 0;
 
                 // =============================================================
                 // ÚLTIMOS CLIENTES (máximo 5)

@@ -1,24 +1,23 @@
-using AutoMapper;
-using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MiniMarket.web.DTOs;
 using MiniMarket.web.Services;
 
 namespace MiniMarket.web.Controllers;
 
+/// <summary>
+/// Controlador de API para la gestión de usuarios
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]  // ✅ CAMBIADO: Solo requiere autenticación, no verifica rol
 public class UsuariosController : ControllerBase
 {
     private readonly IUsuarioService _service;
-    private readonly IValidator<UsuarioDTO> _validator;
-    private readonly IMapper _mapper;
 
-    public UsuariosController(IUsuarioService service, IValidator<UsuarioDTO> validator, IMapper mapper)
+    public UsuariosController(IUsuarioService service)
     {
         _service = service;
-        _validator = validator;
-        _mapper = mapper;
     }
 
     /// <summary>
@@ -45,37 +44,63 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene un usuario por su email
+    /// </summary>
+    [HttpGet("email/{email}")]
+    public async Task<IActionResult> GetByEmail(string email)
+    {
+        var usuario = await _service.GetByEmailAsync(email);
+        if (usuario == null)
+            return NotFound(new { mensaje = $"Usuario con email {email} no encontrado" });
+
+        return Ok(usuario);
+    }
+
+    /// <summary>
+    /// Obtiene un usuario por su username
+    /// </summary>
+    [HttpGet("username/{username}")]
+    public async Task<IActionResult> GetByUsername(string username)
+    {
+        var usuario = await _service.GetByUsernameAsync(username);
+        if (usuario == null)
+            return NotFound(new { mensaje = $"Usuario con username {username} no encontrado" });
+
+        return Ok(usuario);
+    }
+
+    /// <summary>
     /// Crea un nuevo usuario
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] UsuarioDTO usuario)
+    public async Task<IActionResult> Create([FromBody] UsuarioCreateDTO usuarioDto)
     {
-        var result = await _validator.ValidateAsync(usuario);
-        if (!result.IsValid)
-            return BadRequest(result.Errors);
-
-        var nuevo = await _service.CreateAsync(usuario);
-        return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
+        try
+        {
+            var nuevo = await _service.CreateAsync(usuarioDto);
+            return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
     }
 
     /// <summary>
     /// Actualiza un usuario existente
     /// </summary>
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UsuarioDTO usuario)
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UsuarioUpdateDTO usuarioDto)
     {
-        if (id != usuario.Id)
-            return BadRequest(new { mensaje = "El ID de la URL no coincide con el ID del objeto" });
-
-        var result = await _validator.ValidateAsync(usuario);
-        if (!result.IsValid)
-            return BadRequest(result.Errors);
-
-        var actualizado = await _service.UpdateAsync(id, usuario);
-        if (actualizado == null)
-            return NotFound(new { mensaje = $"Usuario con ID {id} no encontrado" });
-
-        return Ok(actualizado);
+        try
+        {
+            var actualizado = await _service.UpdateAsync(usuarioDto);
+            return Ok(actualizado);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
     }
 
     /// <summary>
@@ -84,10 +109,63 @@ public class UsuariosController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var eliminado = await _service.DeleteAsync(id);
-        if (!eliminado)
+        try
+        {
+            var eliminado = await _service.DeleteAsync(id);
+            if (!eliminado)
+                return NotFound(new { mensaje = $"Usuario con ID {id} no encontrado" });
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Desactiva un usuario
+    /// </summary>
+    [HttpPatch("{id}/desactivar")]
+    public async Task<IActionResult> Desactivar(int id)
+    {
+        var desactivado = await _service.DesactivarAsync(id);
+        if (!desactivado)
             return NotFound(new { mensaje = $"Usuario con ID {id} no encontrado" });
 
-        return NoContent();
+        return Ok(new { mensaje = "Usuario desactivado exitosamente" });
+    }
+
+    /// <summary>
+    /// Activa un usuario
+    /// </summary>
+    [HttpPatch("{id}/activar")]
+    public async Task<IActionResult> Activar(int id)
+    {
+        var activado = await _service.ActivarAsync(id);
+        if (!activado)
+            return NotFound(new { mensaje = $"Usuario con ID {id} no encontrado" });
+
+        return Ok(new { mensaje = "Usuario activado exitosamente" });
+    }
+
+    /// <summary>
+    /// Cambia la contraseña de un usuario
+    /// </summary>
+    [HttpPatch("{id}/cambiar-password")]
+    public async Task<IActionResult> CambiarPassword(int id, [FromBody] CambiarPasswordDTO dto)
+    {
+        try
+        {
+            var result = await _service.CambiarPasswordAsync(id, dto.NuevaPassword);
+            if (!result)
+                return BadRequest(new { mensaje = "Error al cambiar la contraseña" });
+
+            return Ok(new { mensaje = "Contraseña cambiada exitosamente" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
     }
 }

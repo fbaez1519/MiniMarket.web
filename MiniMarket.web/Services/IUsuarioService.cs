@@ -5,14 +5,22 @@ namespace MiniMarket.web.Services;
 
 public interface IUsuarioService
 {
+    // ============================================
+    // MÉTODOS DE CONSULTA
+    // ============================================
     Task<Usuario> GetByIdAsync(int id);
     Task<Usuario> GetByEmailAsync(string email);
     Task<Usuario> GetByUsernameAsync(string username);
     Task<IEnumerable<Usuario>> GetAllAsync();
     Task<bool> RegisterAsync(Usuario usuario);
 
-    // Métodos adicionales para el CRUD
-    Task<Usuario> CreateAsync(UsuarioDTO usuarioDto);  // ← Usa UsuarioDTO
-    Task<Usuario> UpdateAsync(int id, UsuarioDTO usuarioDto);  // ← Usa UsuarioDTO
+    // ============================================
+    // MÉTODOS CRUD PARA ADMINISTRADORES
+    // ============================================
+    Task<Usuario> CreateAsync(UsuarioCreateDTO usuarioDto);
+    Task<Usuario> UpdateAsync(UsuarioUpdateDTO usuarioDto);
     Task<bool> DeleteAsync(int id);
+    Task<bool> DesactivarAsync(int id);
+    Task<bool> ActivarAsync(int id);
+    Task<bool> CambiarPasswordAsync(int id, string nuevaPassword);
 }

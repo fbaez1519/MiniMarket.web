@@ -1,3 +1,4 @@
+using AutoMapper;
 using Minimarket.Domain.Entities;
 using MiniMarket.web.DTOs;
 
@@ -31,6 +32,12 @@ public class UsuarioService : IUsuarioService
         }
     };
     private static int _nextId = 3;
+    private readonly IMapper _mapper;
+
+    public UsuarioService(IMapper mapper)
+    {
+        _mapper = mapper;
+    }
 
     // ============================================
     // MÉTODOS DE CONSULTA
@@ -85,95 +92,105 @@ public class UsuarioService : IUsuarioService
     }
 
     // ============================================
-    // MÉTODOS DEL CRUD (Create, Update, Delete)
+    // MÉTODOS CRUD PARA ADMINISTRADORES
     // ============================================
 
-    public async Task<Usuario> CreateAsync(UsuarioDTO usuarioDto)
+    public async Task<Usuario> CreateAsync(UsuarioCreateDTO usuarioDto)
     {
-        try
+        // Verificar email único
+        if (_usuarios.Any(u => u.Email.ToLower() == usuarioDto.Email.ToLower()))
+            throw new Exception($"El email {usuarioDto.Email} ya está registrado");
+
+        // Verificar username único
+        if (_usuarios.Any(u => u.Username.ToLower() == usuarioDto.Username.ToLower()))
+            throw new Exception($"El username {usuarioDto.Username} ya está registrado");
+
+        var usuario = new Usuario
         {
-            // Verificar si el email ya existe
-            var existeEmail = _usuarios.Any(u => u.Email.ToLower() == usuarioDto.Email.ToLower());
-            if (existeEmail)
-                throw new Exception("El email ya está registrado");
+            Id = _nextId++,
+            NombreCompleto = usuarioDto.NombreCompleto,
+            Email = usuarioDto.Email,
+            Username = usuarioDto.Username,
+            PasswordHash = usuarioDto.Password,
+            Rol = usuarioDto.Rol ?? "Vendedor",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
 
-            // Verificar si el username ya existe
-            var existeUsername = _usuarios.Any(u => u.Username.ToLower() == usuarioDto.Username.ToLower());
-            if (existeUsername)
-                throw new Exception("El nombre de usuario ya está registrado");
-
-            var usuario = new Usuario
-            {
-                Id = _nextId++,
-                NombreCompleto = usuarioDto.NombreCompleto,
-                Email = usuarioDto.Email,
-                Username = usuarioDto.Username,
-                PasswordHash = usuarioDto.Password ?? "123456",
-                Rol = usuarioDto.Rol ?? "Vendedor",
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            };
-
-            _usuarios.Add(usuario);
-            return await Task.FromResult(usuario);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error al crear usuario: {ex.Message}");
-        }
+        _usuarios.Add(usuario);
+        return usuario;
     }
 
-    public async Task<Usuario> UpdateAsync(int id, UsuarioDTO usuarioDto)
+    public async Task<Usuario> UpdateAsync(UsuarioUpdateDTO usuarioDto)
     {
-        try
-        {
-            var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuario == null)
-                return null;
+        var usuario = _usuarios.FirstOrDefault(u => u.Id == usuarioDto.Id);
+        if (usuario == null)
+            throw new Exception($"Usuario con ID {usuarioDto.Id} no encontrado");
 
-            // Verificar si el email ya existe (y no es el mismo usuario)
-            var existeEmail = _usuarios.Any(u => u.Email.ToLower() == usuarioDto.Email.ToLower() && u.Id != id);
-            if (existeEmail)
-                throw new Exception("El email ya está registrado por otro usuario");
+        // Verificar email único (excepto el mismo)
+        if (_usuarios.Any(u => u.Email.ToLower() == usuarioDto.Email.ToLower() && u.Id != usuarioDto.Id))
+            throw new Exception($"El email {usuarioDto.Email} ya está registrado por otro usuario");
 
-            // Verificar si el username ya existe (y no es el mismo usuario)
-            var existeUsername = _usuarios.Any(u => u.Username.ToLower() == usuarioDto.Username.ToLower() && u.Id != id);
-            if (existeUsername)
-                throw new Exception("El nombre de usuario ya está registrado por otro usuario");
+        // Verificar username único (excepto el mismo)
+        if (_usuarios.Any(u => u.Username.ToLower() == usuarioDto.Username.ToLower() && u.Id != usuarioDto.Id))
+            throw new Exception($"El username {usuarioDto.Username} ya está registrado por otro usuario");
 
-            // Actualizar propiedades
-            usuario.NombreCompleto = usuarioDto.NombreCompleto ?? usuario.NombreCompleto;
-            usuario.Email = usuarioDto.Email ?? usuario.Email;
-            usuario.Username = usuarioDto.Username ?? usuario.Username;
-            usuario.Rol = usuarioDto.Rol ?? usuario.Rol;
-            usuario.UpdatedAt = DateTime.UtcNow;
+        usuario.NombreCompleto = usuarioDto.NombreCompleto;
+        usuario.Email = usuarioDto.Email;
+        usuario.Username = usuarioDto.Username;
+        usuario.Rol = usuarioDto.Rol;
+        usuario.UpdatedAt = DateTime.UtcNow;
 
-            return await Task.FromResult(usuario);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error al actualizar usuario: {ex.Message}");
-        }
+        return usuario;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        try
-        {
-            var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuario == null)
-                return await Task.FromResult(false);
+        var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
+        if (usuario == null)
+            return false;
 
-            // No permitir eliminar al administrador principal
-            if (usuario.Username == "admin" && usuario.Rol == "Administrador")
-                return await Task.FromResult(false);
+        // No permitir eliminar al administrador principal
+        if (usuario.Username == "admin" && usuario.Rol == "Administrador")
+            throw new Exception("No se puede eliminar al administrador principal");
 
-            _usuarios.Remove(usuario);
-            return await Task.FromResult(true);
-        }
-        catch
-        {
-            return await Task.FromResult(false);
-        }
+        _usuarios.Remove(usuario);
+        return true;
+    }
+
+    public async Task<bool> DesactivarAsync(int id)
+    {
+        var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
+        if (usuario == null)
+            return false;
+
+        usuario.EstaActivo = false;
+        usuario.UpdatedAt = DateTime.UtcNow;
+        return true;
+    }
+
+    public async Task<bool> ActivarAsync(int id)
+    {
+        var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
+        if (usuario == null)
+            return false;
+
+        usuario.EstaActivo = true;
+        usuario.UpdatedAt = DateTime.UtcNow;
+        return true;
+    }
+
+    public async Task<bool> CambiarPasswordAsync(int id, string nuevaPassword)
+    {
+        var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
+        if (usuario == null)
+            throw new Exception("Usuario no encontrado");
+
+        if (string.IsNullOrEmpty(nuevaPassword) || nuevaPassword.Length < 6)
+            throw new Exception("La nueva contraseña debe tener al menos 6 caracteres");
+
+        usuario.PasswordHash = nuevaPassword;
+        usuario.UpdatedAt = DateTime.UtcNow;
+        return true;
     }
 }
