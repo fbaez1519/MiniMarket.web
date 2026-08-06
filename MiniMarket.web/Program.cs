@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // ============================================
-// 🔥 CONFIGURACIÓN DE CORS
+//  CONFIGURACIÓN DE CORS
 // ============================================
 builder.Services.AddCors(options =>
 {
@@ -26,9 +26,9 @@ builder.Services.AddCors(options =>
 });
 
 // ============================================
-// AUTOMAPPER - MAPPINGS
+// AUTOMAPPER - MAPPINGS (Corregido para la solución completa)
 // ============================================
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // ============================================
 // SERVICIOS - INYECCIÓN DE DEPENDENCIAS
@@ -89,6 +89,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// ============================================
+// ARCHIVOS ESTÁTICOS (OBLIGATORIO PARA EL FRONTEND)
+// ============================================
+app.UseStaticFiles();
 
 // ============================================
 // CORS DEBE IR ANTES DE AUTENTICACIÓN

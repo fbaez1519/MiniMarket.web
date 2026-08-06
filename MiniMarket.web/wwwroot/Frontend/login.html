@@ -131,15 +131,15 @@
             cursor: pointer;
         }
 
-            .btn-primary-custom:hover:not(:disabled) {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 28px rgba(46, 204, 113, 0.4);
-            }
+        .btn-primary-custom:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(46, 204, 113, 0.4);
+        }
 
-            .btn-primary-custom:disabled {
-                opacity: 0.7;
-                cursor: not-allowed;
-            }
+        .btn-primary-custom:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
         .toggle-password {
             position: absolute;
@@ -154,9 +154,9 @@
             z-index: 5;
         }
 
-            .toggle-password:hover {
-                color: var(--color-primary);
-            }
+        .toggle-password:hover {
+            color: var(--color-primary);
+        }
 
         .password-field {
             padding-right: 40px;
@@ -208,11 +208,11 @@
             margin-top: 1rem;
         }
 
-            .action-link:hover {
-                background: #e8f0fe;
-                border-color: var(--color-primary-light);
-                transform: translateY(-2px);
-            }
+        .action-link:hover {
+            background: #e8f0fe;
+            border-color: var(--color-primary-light);
+            transform: translateY(-2px);
+        }
 
         .divider {
             display: flex;
@@ -223,12 +223,12 @@
             font-size: 0.75rem;
         }
 
-            .divider::before,
-            .divider::after {
-                content: '';
-                flex: 1;
-                border-bottom: 1px solid #e8edf3;
-            }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e8edf3;
+        }
 
         @media (max-width: 480px) {
             .card-auth {
@@ -379,12 +379,23 @@
                     return;
                 }
 
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('usuario', data.usuario);
-                localStorage.setItem('rol', data.rol || 'Usuario');
+                // 🛠️ Corrección aplicada: Soporta tanto minúsculas como mayúsculas en las propiedades devueltas por la API
+                const tokenValue = data.token || data.Token;
+                const userValue = data.usuario || data.Usuario || data.email || data.Email;
+                const roleValue = data.rol || data.Rol || 'Usuario';
+
+                if (!tokenValue) {
+                    showMsg(msg, '❌ Error: La API no devolvió un token válido.', 'error');
+                    setLoading(btn, false);
+                    return;
+                }
+
+                localStorage.setItem('token', tokenValue);
+                localStorage.setItem('usuario', userValue);
+                localStorage.setItem('rol', roleValue);
 
                 showMsg(msg, '✅ Login exitoso. Redirigiendo...', 'success');
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                setTimeout(() => window.location.href = 'usuarios.html', 1500);
 
             } catch (error) {
                 console.error('Error:', error);

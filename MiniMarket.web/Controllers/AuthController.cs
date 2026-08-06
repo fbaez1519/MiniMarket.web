@@ -39,7 +39,13 @@ public class AuthController : ControllerBase
         // Actualizar último acceso
         usuario.ActualizarUltimoAcceso();
 
-        var token = JwtHelper.GenerateToken(usuario, _configuration["Jwt:Key"]!);
+        // Generar token JWTS
+        var token = JwtHelper.GenerateToken(
+            usuario,
+            _configuration["Jwt:Key"]!,
+            _configuration["Jwt:Issuer"]!,
+            _configuration["Jwt:Audience"]!
+        );
 
         return Ok(new LoginResponseDTO
         {

@@ -8,7 +8,7 @@ namespace MiniMarket.web.Helpers;
 
 public static class JwtHelper
 {
-    public static string GenerateToken(Usuario usuario, string secretKey)
+    public static string GenerateToken(Usuario usuario, string secretKey, string issuer, string audience)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(secretKey);
@@ -24,7 +24,11 @@ public static class JwtHelper
                 new Claim("username", usuario.Username)
             }),
             Expires = DateTime.UtcNow.AddHours(8),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            Issuer = issuer,
+            Audience = audience,
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
