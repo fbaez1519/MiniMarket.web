@@ -633,480 +633,416 @@
 </script>
 
 <script>
-    (function() {
-        // =============================================================
-        // VERIFICAR AUTENTICACIÓN Y PERMISOS (MODO PRUEBAS)
-        // =============================================================
-        const token = localStorage.getItem('token');
-        const rol = localStorage.getItem('rol');
+    // =============================================================
+    // CONFIGURACIÓN
+    // =============================================================
+    const API_URL = 'http://localhost:5285/api/Usuarios';
+    const token = localStorage.getItem('token');
+    const rol = localStorage.getItem('rol');
 
-        console.log('🔍 Token existe:', token ? '✅ Sí' : '❌ No');
-        console.log('🔍 Rol:', rol);
-        console.log('🔍 Token (primeros 50 chars):', token ? token.substring(0, 50) + '...' : 'No hay token');
+    let modalUsuario = null;
+    let modalEliminar = null;
+    let modalPassword = null;
+    let editando = false;
 
-        // ⚠️ VALIDACIONES DESACTIVADAS PARA PRUEBAS ⚠️
-        // if (!token) {
-        //     window.location.href = 'login.html';
-        //     return;
-        // }
+    // =============================================================
+    // DOMContentLoaded
+    // =============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ DOM cargado correctamente');
 
-        // if (rol !== 'Administrador') {
-        //     alert('⚠️ Acceso denegado. Solo administradores pueden ver esta página.');
-        //     window.location.href = 'dashboard.html';
-        //     return;
-        // }
+        // Inicializar modales
+        try {
+            modalUsuario = new bootstrap.Modal(document.getElementById('modalUsuario'));
+            modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
+            modalPassword = new bootstrap.Modal(document.getElementById('modalPassword'));
+            console.log('✅ Modales inicializados');
+        } catch (error) {
+            console.error('❌ Error al inicializar modales:', error);
+        }
 
-        console.log('✅ Acceso permitido en modo pruebas');
+        // Cargar usuarios
+        cargarUsuarios();
 
-        // =============================================================
-        // CONFIGURACIÓN
-        // =============================================================
-        const API_URL = 'http://localhost:5285/api/Usuarios';
-        let modalUsuario = null;
-        let modalEliminar = null;
-        let modalPassword = null;
-        let editando = false;
+        // Eventos
+        document.getElementById('btnNuevoUsuario').addEventListener('click', abrirNuevo);
+        document.getElementById('btnGuardarUsuario').addEventListener('click', guardarUsuario);
+        document.getElementById('btnConfirmarEliminar').addEventListener('click', eliminarUsuario);
+        document.getElementById('btnCambiarPassword').addEventListener('click', cambiarPassword);
 
-        // =============================================================
-        // FUNCIÓN PARA ABRIR MODAL (GLOBAL)
-        // =============================================================
-        window.abrirNuevo = function() {
-            try {
-                console.log('✅ Ejecutando abrirNuevo()');
-                editando = false;
-                document.getElementById('modalTitle').innerHTML =
-                    '<i class="fas fa-user-plus" style="color: #2ecc71;"></i> Nuevo Usuario';
-                document.getElementById('formUsuario').reset();
-                document.getElementById('usuarioId').value = '0';
-                document.getElementById('uActivo').checked = true;
-                document.getElementById('uRol').value = 'Vendedor';
-                document.getElementById('passwordFields').style.display = 'flex';
-                document.getElementById('uPassword').required = true;
-                document.getElementById('uConfirmPassword').required = true;
-
-                if (modalUsuario) {
-                    modalUsuario.show();
-                    console.log('✅ Modal abierto correctamente');
-                } else {
-                    console.error('❌ modalUsuario es null');
-                    modalUsuario = new bootstrap.Modal(document.getElementById('modalUsuario'));
-                    modalUsuario.show();
-                    console.log('✅ Modal reinicializado y abierto');
-                }
-            } catch (error) {
-                console.error('❌ Error en abrirNuevo:', error);
-                alert('Error al abrir el formulario: ' + error.message);
-            }
-        };
-
-        // =============================================================
-        // DOMContentLoaded
-        // =============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ DOM cargado correctamente');
-
-            // Inicializar modales
-            try {
-                modalUsuario = new bootstrap.Modal(document.getElementById('modalUsuario'));
-                modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
-                modalPassword = new bootstrap.Modal(document.getElementById('modalPassword'));
-                console.log('✅ Modales inicializados correctamente');
-            } catch (error) {
-                console.error('❌ Error al inicializar modales:', error);
-            }
-
-            // Cargar usuarios
-            cargarUsuarios();
-
-            // =============================================================
-            // ASIGNAR EVENTOS MANUALMENTE
-            // =============================================================
-            const btnNuevo = document.getElementById('btnNuevoUsuario');
-            if (btnNuevo) {
-                // Eliminar eventos previos
-                const nuevoBtn = btnNuevo.cloneNode(true);
-                btnNuevo.parentNode.replaceChild(nuevoBtn, btnNuevo);
-                nuevoBtn.addEventListener('click', function(e) {
-                    console.log('✅ Botón "Nuevo Usuario" clickeado');
-                    window.abrirNuevo();
-                });
-                console.log('✅ Evento asignado al botón Nuevo Usuario');
-            } else {
-                console.error('❌ Botón "btnNuevoUsuario" no encontrado');
-            }
-
-            document.getElementById('btnGuardarUsuario').addEventListener('click', guardarUsuario);
-            document.getElementById('btnConfirmarEliminar').addEventListener('click', eliminarUsuario);
-            document.getElementById('btnCambiarPassword').addEventListener('click', cambiarPassword);
-
-            document.getElementById('logoutNav').addEventListener('click', function(e) {
-                e.preventDefault();
-                localStorage.removeItem('token');
-                localStorage.removeItem('usuario');
-                localStorage.removeItem('rol');
-                window.location.href = 'login.html';
-            });
-
-            console.log('%c🛒 MiniMarket - Usuarios', 'font-size:18px; font-weight:bold; color:#2ecc71;');
-            console.log('%c🔗 API: ' + API_URL, 'color:#7f8c8d;');
+        document.getElementById('logoutNav').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('rol');
+            window.location.href = 'login.html';
         });
 
-        // =============================================================
-        // CARGAR USUARIOS
-        // =============================================================
-        async function cargarUsuarios() {
-            const tbody = document.getElementById('tbodyUsuarios');
+        console.log('%c🛒 MiniMarket - Usuarios', 'font-size:18px; font-weight:bold; color:#2ecc71;');
+        console.log('%c🔗 API: ' + API_URL, 'color:#7f8c8d;');
+    });
 
-            try {
-                const res = await fetch(API_URL, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+    // =============================================================
+    // CARGAR USUARIOS
+    // =============================================================
+    async function cargarUsuarios() {
+        const tbody = document.getElementById('tbodyUsuarios');
 
-                // ⚠️ REDIRECCIÓN DESACTIVADA PARA PRUEBAS ⚠️
-                // if (res.status === 401 || res.status === 403) {
-                //     window.location.href = 'login.html';
-                //     return;
-                // }
+        try {
+            const res = await fetch(API_URL, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
 
-                if (res.status === 401 || res.status === 403) {
-                    console.warn('⚠️ Error 401/403, pero permitiendo pruebas');
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="7">
-                                <div class="empty-state">
-                                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
-                                    <h5>⚠️ Error de autenticación (401)</h5>
-                                    <p class="text-muted">Token inválido o expirado. Revisa la consola.</p>
-                                    <button class="btn btn-primary-custom mt-2" onclick="window.location.href='login.html'">
-                                        Ir al Login
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                if (!res.ok) throw new Error('Error al cargar usuarios');
-
-                const usuarios = await res.json();
-
-                if (!usuarios || usuarios.length === 0) {
-                    tbody.innerHTML = `
-                            <tr>
-                                <td colspan="7">
-                                    <div class="empty-state">
-                                        <i class="fas fa-users"></i>
-                                        <h5>No hay usuarios registrados</h5>
-                                        <p class="text-muted">Haz clic en "Nuevo Usuario" para agregar uno</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    return;
-                }
-
-                tbody.innerHTML = usuarios.map(u => {
-                    const rolClass = u.rol === 'Administrador' ? 'admin' : 'vendedor';
-                    const rolLabel = u.rol || 'Vendedor';
-
-                    return `
-                            <tr>
-                                <td><strong>${u.id}</strong></td>
-                                <td>${u.nombreCompleto}</td>
-                                <td>${u.email}</td>
-                                <td><span class="fw-semibold">${u.username}</span></td>
-                                <td><span class="badge-role ${rolClass}">${rolLabel}</span></td>
-                                <td>
-                                    <span class="badge-status ${u.estaActivo !== false ? 'active' : 'inactive'}">
-                                        ${u.estaActivo !== false ? 'Activo' : 'Inactivo'}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn-action edit" onclick="editarUsuario(${u.id})" title="Editar">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn-action password" onclick="abrirCambiarPassword(${u.id})" title="Cambiar Contraseña">
-                                        <i class="fas fa-key"></i>
-                                    </button>
-                                    <button class="btn-action delete" onclick="confirmarEliminar(${u.id})" title="Eliminar">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <button class="btn-action toggle" onclick="toggleEstado(${u.id}, ${!u.estaActivo})" title="${u.estaActivo !== false ? 'Desactivar' : 'Activar'}">
-                                        <i class="fas ${u.estaActivo !== false ? 'fa-pause' : 'fa-play'}"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                }).join('');
-
-            } catch (error) {
-                console.error('Error:', error);
-                tbody.innerHTML = `
-                        <tr>
-                            <td colspan="7">
-                                <div class="empty-state">
-                                    <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
-                                    <h5>Error al cargar usuarios</h5>
-                                    <p class="text-muted">Verifica que el servidor esté ejecutándose en http://localhost:5285</p>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-            }
-        }
-
-        // =============================================================
-        // EDITAR USUARIO
-        // =============================================================
-        async function editarUsuario(id) {
-            try {
-                const res = await fetch(`${API_URL}/${id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!res.ok) throw new Error('Error al obtener usuario');
-
-                const u = await res.json();
-                editando = true;
-
-                document.getElementById('modalTitle').innerHTML =
-                    '<i class="fas fa-user-edit" style="color: #3498db;"></i> Editar Usuario';
-                document.getElementById('usuarioId').value = u.id;
-                document.getElementById('uNombre').value = u.nombreCompleto || '';
-                document.getElementById('uEmail').value = u.email || '';
-                document.getElementById('uUsername').value = u.username || '';
-                document.getElementById('uRol').value = u.rol || 'Vendedor';
-                document.getElementById('uActivo').checked = u.estaActivo !== false;
-                document.getElementById('passwordFields').style.display = 'none';
-                document.getElementById('uPassword').required = false;
-                document.getElementById('uConfirmPassword').required = false;
-
-                modalUsuario.show();
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Error al cargar los datos del usuario');
-            }
-        }
-
-        // =============================================================
-        // GUARDAR USUARIO
-        // =============================================================
-        async function guardarUsuario() {
-            const id = document.getElementById('usuarioId').value;
-            const password = document.getElementById('uPassword').value;
-            const confirmPassword = document.getElementById('uConfirmPassword').value;
-
-            const data = {
-                nombreCompleto: document.getElementById('uNombre').value.trim(),
-                email: document.getElementById('uEmail').value.trim(),
-                username: document.getElementById('uUsername').value.trim(),
-                rol: document.getElementById('uRol').value,
-                estaActivo: document.getElementById('uActivo').checked
-            };
-
-            if (!data.nombreCompleto || !data.email || !data.username) {
-                alert('⚠️ Los campos Nombre, Email y Username son obligatorios.');
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = 'login.html';
                 return;
             }
 
-            const btn = document.getElementById('btnGuardarUsuario');
-            const originalText = btn.innerHTML;
+            if (!res.ok) throw new Error('Error al cargar usuarios');
 
-            if (!editando) {
-                if (!password || password.length < 6) {
-                    alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
-                    return;
-                }
-                if (password !== confirmPassword) {
-                    alert('⚠️ Las contraseñas no coinciden.');
-                    return;
-                }
-                data.password = password;
+            const usuarios = await res.json();
+
+            if (!usuarios || usuarios.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <h5>No hay usuarios registrados</h5>
+                                <p class="text-muted">Haz clic en "Nuevo Usuario" para agregar uno</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
             }
 
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+            tbody.innerHTML = usuarios.map(u => {
+                const rolClass = u.rol === 'Administrador' ? 'admin' : 'vendedor';
+                const rolLabel = u.rol || 'Vendedor';
+                const statusClass = u.estaActivo !== false ? 'active' : 'inactive';
+                const statusLabel = u.estaActivo !== false ? 'Activo' : 'Inactivo';
 
-            try {
-                const method = editando ? 'PUT' : 'POST';
-                const body = editando ? { ...data, id: parseInt(id) } : data;
+                return `
+                    <tr>
+                        <td><strong>${u.id}</strong></td>
+                        <td>${u.nombreCompleto}</td>
+                        <td>${u.email}</td>
+                        <td><span class="fw-semibold">${u.username}</span></td>
+                        <td><span class="badge-role ${rolClass}">${rolLabel}</span></td>
+                        <td>
+                            <span class="badge-status ${statusClass}">
+                                ${statusLabel}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn-action edit" onclick="editarUsuario(${u.id})" title="Editar">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="btn-action password" onclick="abrirCambiarPassword(${u.id})" title="Cambiar Contraseña">
+                                <i class="fas fa-key"></i>
+                            </button>
+                            <button class="btn-action delete" onclick="confirmarEliminar(${u.id})" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <button class="btn-action toggle" onclick="toggleEstado(${u.id})" title="${u.estaActivo !== false ? 'Desactivar' : 'Activar'}">
+                                <i class="fas ${u.estaActivo !== false ? 'fa-pause' : 'fa-play'}"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
 
-                const res = await fetch(API_URL, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(body)
-                });
+        } catch (error) {
+            console.error('Error:', error);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+                            <h5>Error al cargar usuarios</h5>
+                            <p class="text-muted">Verifica que el servidor esté ejecutándose en http://localhost:5285</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
 
-                const result = await res.json();
+    // =============================================================
+    // ABRIR NUEVO
+    // =============================================================
+    function abrirNuevo() {
+        editando = false;
+        document.getElementById('modalTitle').innerHTML =
+            '<i class="fas fa-user-plus" style="color: #2ecc71;"></i> Nuevo Usuario';
+        document.getElementById('formUsuario').reset();
+        document.getElementById('usuarioId').value = '0';
+        document.getElementById('uActivo').checked = true;
+        document.getElementById('uRol').value = 'Vendedor';
+        document.getElementById('passwordFields').style.display = 'flex';
+        document.getElementById('uPassword').required = true;
+        document.getElementById('uConfirmPassword').required = true;
+        modalUsuario.show();
+    }
 
-                if (!res.ok) {
-                    alert('❌ ' + (result.mensaje || result.title || 'Error al guardar el usuario'));
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                    return;
-                }
+    // =============================================================
+    // EDITAR USUARIO
+    // =============================================================
+    window.editarUsuario = async function(id) {
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
 
-                modalUsuario.hide();
-                cargarUsuarios();
-                alert('✅ Usuario guardado exitosamente');
+            if (!res.ok) throw new Error('Error al obtener usuario');
 
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
-            }
+            const u = await res.json();
+            editando = true;
 
-            btn.disabled = false;
-            btn.innerHTML = originalText;
+            document.getElementById('modalTitle').innerHTML =
+                '<i class="fas fa-user-edit" style="color: #3498db;"></i> Editar Usuario';
+            document.getElementById('usuarioId').value = u.id;
+            document.getElementById('uNombre').value = u.nombreCompleto || '';
+            document.getElementById('uEmail').value = u.email || '';
+            document.getElementById('uUsername').value = u.username || '';
+            document.getElementById('uRol').value = u.rol || 'Vendedor';
+            document.getElementById('uActivo').checked = u.estaActivo !== false;
+            document.getElementById('passwordFields').style.display = 'none';
+            document.getElementById('uPassword').required = false;
+            document.getElementById('uConfirmPassword').required = false;
+
+            modalUsuario.show();
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error al cargar los datos del usuario');
+        }
+    };
+
+    // =============================================================
+    // GUARDAR USUARIO
+    // =============================================================
+    async function guardarUsuario() {
+        const id = document.getElementById('usuarioId').value;
+        const password = document.getElementById('uPassword').value;
+        const confirmPassword = document.getElementById('uConfirmPassword').value;
+
+        const data = {
+            nombreCompleto: document.getElementById('uNombre').value.trim(),
+            email: document.getElementById('uEmail').value.trim(),
+            username: document.getElementById('uUsername').value.trim(),
+            rol: document.getElementById('uRol').value,
+            estaActivo: document.getElementById('uActivo').checked
+        };
+
+        if (!data.nombreCompleto || !data.email || !data.username) {
+            alert('⚠️ Los campos Nombre, Email y Username son obligatorios.');
+            return;
         }
 
-        // =============================================================
-        // CONFIRMAR ELIMINAR
-        // =============================================================
-        function confirmarEliminar(id) {
-            document.getElementById('deleteId').value = id;
-            modalEliminar.show();
-        }
+        const btn = document.getElementById('btnGuardarUsuario');
+        const originalText = btn.innerHTML;
 
-        // =============================================================
-        // ELIMINAR USUARIO
-        // =============================================================
-        async function eliminarUsuario() {
-            const id = document.getElementById('deleteId').value;
-            const btn = document.getElementById('btnConfirmarEliminar');
-            const originalText = btn.innerHTML;
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-
-            try {
-                const res = await fetch(`${API_URL}/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!res.ok) {
-                    const result = await res.json();
-                    alert('❌ ' + (result.mensaje || 'Error al eliminar el usuario'));
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                    return;
-                }
-
-                modalEliminar.hide();
-                cargarUsuarios();
-                alert('✅ Usuario eliminado exitosamente');
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
-
-        // =============================================================
-        // TOGGLE ESTADO
-        // =============================================================
-        async function toggleEstado(id, activar) {
-            const action = activar ? 'activar' : 'desactivar';
-            const msg = activar ? 'activado' : 'desactivado';
-
-            if (!confirm(`¿Estás seguro de ${msg} este usuario?`)) return;
-
-            try {
-                const res = await fetch(`${API_URL}/${id}/${action}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (!res.ok) {
-                    const result = await res.json();
-                    alert('❌ ' + (result.mensaje || 'Error al cambiar el estado'));
-                    return;
-                }
-
-                cargarUsuarios();
-                alert(`✅ Usuario ${msg} exitosamente`);
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
-            }
-        }
-
-        // =============================================================
-        // ABRIR CAMBIAR CONTRASEÑA
-        // =============================================================
-        function abrirCambiarPassword(id) {
-            document.getElementById('passwordUserId').value = id;
-            document.getElementById('formPassword').reset();
-            modalPassword.show();
-        }
-
-        // =============================================================
-        // CAMBIAR CONTRASEÑA
-        // =============================================================
-        async function cambiarPassword() {
-            const id = document.getElementById('passwordUserId').value;
-            const nuevaPassword = document.getElementById('nuevaPassword').value;
-            const confirmPassword = document.getElementById('confirmNuevaPassword').value;
-
-            if (!nuevaPassword || nuevaPassword.length < 6) {
+        if (!editando) {
+            if (!password || password.length < 6) {
                 alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
                 return;
             }
-
-            if (nuevaPassword !== confirmPassword) {
+            if (password !== confirmPassword) {
                 alert('⚠️ Las contraseñas no coinciden.');
                 return;
             }
+            data.password = password;
+        }
 
-            const btn = document.getElementById('btnCambiarPassword');
-            const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
 
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        try {
+            const method = editando ? 'PUT' : 'POST';
+            const body = editando ? { ...data, id: parseInt(id) } : data;
 
-            try {
-                const res = await fetch(`${API_URL}/${id}/cambiar-password`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ nuevaPassword })
-                });
+            const res = await fetch(API_URL, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
 
-                const result = await res.json();
+            const result = await res.json();
 
-                if (!res.ok) {
-                    alert('❌ ' + (result.mensaje || 'Error al cambiar la contraseña'));
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                    return;
-                }
-
-                modalPassword.hide();
-                alert('✅ Contraseña cambiada exitosamente');
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+            if (!res.ok) {
+                alert('❌ ' + (result.mensaje || result.title || 'Error al guardar el usuario'));
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                return;
             }
 
-            btn.disabled = false;
-            btn.innerHTML = originalText;
+            modalUsuario.hide();
+            cargarUsuarios();
+            alert('✅ Usuario guardado exitosamente');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
         }
-    })();
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+
+    // =============================================================
+    // CONFIRMAR ELIMINAR
+    // =============================================================
+    window.confirmarEliminar = function(id) {
+        document.getElementById('deleteId').value = id;
+        modalEliminar.show();
+    };
+
+    // =============================================================
+    // ELIMINAR USUARIO
+    // =============================================================
+    async function eliminarUsuario() {
+        const id = document.getElementById('deleteId').value;
+        const btn = document.getElementById('btnConfirmarEliminar');
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!res.ok) {
+                const result = await res.json();
+                alert('❌ ' + (result.mensaje || 'Error al eliminar el usuario'));
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                return;
+            }
+
+            modalEliminar.hide();
+            cargarUsuarios();
+            alert('✅ Usuario eliminado exitosamente');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+
+    // =============================================================
+    // TOGGLE ESTADO - CORREGIDO
+    // =============================================================
+    window.toggleEstado = async function(id) {
+        const usuario = await fetch(`${API_URL}/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        }).then(res => res.json());
+
+        const nuevoEstado = usuario.estaActivo !== false ? false : true;
+        const action = nuevoEstado ? 'activar' : 'desactivar';
+        const msg = nuevoEstado ? 'activado' : 'desactivado';
+
+        if (!confirm(`¿Estás seguro de ${msg} este usuario?`)) return;
+
+        try {
+            // ✅ RUTA CORRECTA: /api/Usuarios/{id}/activar o /api/Usuarios/{id}/desactivar
+            const res = await fetch(`${API_URL}/${id}/${action}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!res.ok) {
+                const result = await res.json();
+                alert('❌ ' + (result.mensaje || 'Error al cambiar el estado'));
+                return;
+            }
+
+            cargarUsuarios();
+            alert(`✅ Usuario ${msg} exitosamente`);
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+        }
+    };
+
+    // =============================================================
+    // ABRIR CAMBIAR CONTRASEÑA
+    // =============================================================
+    window.abrirCambiarPassword = function(id) {
+        document.getElementById('passwordUserId').value = id;
+        document.getElementById('formPassword').reset();
+        modalPassword.show();
+    };
+
+    // =============================================================
+    // CAMBIAR CONTRASEÑA - CORREGIDO
+    // =============================================================
+    async function cambiarPassword() {
+        const id = document.getElementById('passwordUserId').value;
+        const nuevaPassword = document.getElementById('nuevaPassword').value;
+        const confirmPassword = document.getElementById('confirmNuevaPassword').value;
+
+        if (!nuevaPassword || nuevaPassword.length < 6) {
+            alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
+            return;
+        }
+
+        if (nuevaPassword !== confirmPassword) {
+            alert('⚠️ Las contraseñas no coinciden.');
+            return;
+        }
+
+        const btn = document.getElementById('btnCambiarPassword');
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        try {
+            // ✅ RUTA CORRECTA: /api/Usuarios/{id}/cambiar-password
+            const res = await fetch(`${API_URL}/${id}/cambiar-password`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ nuevaPassword })
+            });
+
+            const result = await res.json();
+
+            if (!res.ok) {
+                alert('❌ ' + (result.mensaje || 'Error al cambiar la contraseña'));
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                return;
+            }
+
+            modalPassword.hide();
+            alert('✅ Contraseña cambiada exitosamente');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
 </script>
 
 </body>

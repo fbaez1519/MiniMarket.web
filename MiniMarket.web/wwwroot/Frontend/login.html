@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MiniMarket - Login</title>
 
+    <!-- ===== CDN ===== -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
+        /* ============================================================ */
+        /* ROOT VARIABLES                                              */
+        /* ============================================================ */
         :root {
             --color-primary: #1a2a4a;
             --color-primary-light: #2c4a7a;
@@ -23,6 +27,9 @@
             --transition: 0.3s ease;
         }
 
+        /* ============================================================ */
+        /* RESET                                                       */
+        /* ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -39,6 +46,9 @@
             padding: 20px;
         }
 
+        /* ============================================================ */
+        /* CARD                                                        */
+        /* ============================================================ */
         .card-auth {
             background: var(--color-card);
             border-radius: var(--radius);
@@ -48,6 +58,9 @@
             padding: 2.2rem 2rem;
         }
 
+        /* ============================================================ */
+        /* LOGO                                                        */
+        /* ============================================================ */
         .logo {
             text-align: center;
             margin-bottom: 1.8rem;
@@ -78,6 +91,9 @@
             color: var(--color-text-light);
         }
 
+        /* ============================================================ */
+        /* FORM                                                        */
+        /* ============================================================ */
         .form-label {
             font-size: 0.82rem;
             font-weight: 600;
@@ -113,6 +129,9 @@
             background: #fff;
         }
 
+        /* ============================================================ */
+        /* BUTTONS                                                     */
+        /* ============================================================ */
         .btn-primary-custom {
             display: flex;
             align-items: center;
@@ -141,6 +160,9 @@
             cursor: not-allowed;
         }
 
+        /* ============================================================ */
+        /* TOGGLE PASSWORD                                             */
+        /* ============================================================ */
         .toggle-password {
             position: absolute;
             right: 12px;
@@ -162,6 +184,9 @@
             padding-right: 40px;
         }
 
+        /* ============================================================ */
+        /* MESSAGES                                                    */
+        /* ============================================================ */
         .msg {
             padding: 0.6rem 0.8rem;
             border-radius: 10px;
@@ -191,6 +216,9 @@
             border: 1px solid #f5b7b1;
         }
 
+        /* ============================================================ */
+        /* ACTION LINK                                                 */
+        /* ============================================================ */
         .action-link {
             display: flex;
             align-items: center;
@@ -214,6 +242,9 @@
             transform: translateY(-2px);
         }
 
+        /* ============================================================ */
+        /* DIVIDER                                                     */
+        /* ============================================================ */
         .divider {
             display: flex;
             align-items: center;
@@ -230,6 +261,9 @@
             border-bottom: 1px solid #e8edf3;
         }
 
+        /* ============================================================ */
+        /* RESPONSIVE                                                   */
+        /* ============================================================ */
         @media (max-width: 480px) {
             .card-auth {
                 padding: 1.5rem 1.2rem;
@@ -249,14 +283,25 @@
 </head>
 <body>
 
+    <!-- ============================================================ -->
+    <!-- CARD                                                        -->
+    <!-- ============================================================ -->
     <div class="card-auth">
+
+        <!-- ============================================================ -->
+        <!-- LOGO                                                        -->
+        <!-- ============================================================ -->
         <div class="logo">
             <div class="logo-icon"><i class="fas fa-store"></i></div>
             <div class="logo-title">MiniMarket</div>
             <div class="logo-subtitle">Iniciar Sesión</div>
         </div>
 
+        <!-- ============================================================ -->
+        <!-- LOGIN FORM                                                  -->
+        <!-- ============================================================ -->
         <form id="loginForm">
+            <!-- Email -->
             <div class="mb-3">
                 <label class="form-label">
                     <i class="fas fa-envelope" style="color: var(--color-primary-light);"></i>
@@ -269,6 +314,7 @@
                 </div>
             </div>
 
+            <!-- Password -->
             <div class="mb-3">
                 <label class="form-label">
                     <i class="fas fa-key" style="color: var(--color-primary-light);"></i>
@@ -284,27 +330,44 @@
                 </div>
             </div>
 
+            <!-- Submit -->
             <button type="submit" class="btn-primary-custom" id="loginBtn">
                 <i class="fas fa-sign-in-alt"></i> Ingresar
             </button>
 
+            <!-- Message -->
             <div id="loginMsg" class="msg"></div>
         </form>
 
+        <!-- ============================================================ -->
+        <!-- DIVIDER                                                     -->
+        <!-- ============================================================ -->
         <div class="divider">
             <i class="fas fa-shield-alt" style="color: var(--color-secondary);"></i>
             Sistema Seguro
         </div>
 
+        <!-- ============================================================ -->
+        <!-- ACTION LINK                                                 -->
+        <!-- ============================================================ -->
         <a href="register.html" class="action-link">
             <i class="fas fa-user-plus"></i> ¿No tienes cuenta? Regístrate aquí
         </a>
+
     </div>
 
+    <!-- ============================================================ -->
+    <!-- SCRIPTS                                                      -->
+    <!-- ============================================================ -->
     <script>
         // =============================================================
         // UTILITIES
         // =============================================================
+
+        /**
+         * Muestra/oculta la contraseña en el campo de entrada
+         * @param {string} id - ID del input de contraseña
+         */
         function togglePass(id) {
             const input = document.getElementById(id);
             const icon = input.parentElement.querySelector('.toggle-password i');
@@ -317,11 +380,22 @@
             }
         }
 
+        /**
+         * Muestra un mensaje en el elemento indicado
+         * @param {HTMLElement} el - Elemento donde mostrar el mensaje
+         * @param {string} msg - Texto del mensaje
+         * @param {string} type - Tipo de mensaje: 'info', 'success', 'error'
+         */
         function showMsg(el, msg, type) {
             el.textContent = msg;
             el.className = 'msg msg-' + type;
         }
 
+        /**
+         * Activa/desactiva el estado de carga de un botón
+         * @param {HTMLElement} btn - Botón a modificar
+         * @param {boolean} loading - true para cargando, false para normal
+         */
         function setLoading(btn, loading) {
             btn.disabled = loading;
             btn.innerHTML = loading
@@ -329,35 +403,42 @@
                 : btn.dataset.original;
         }
 
+        // Guardar texto original del botón
         document.getElementById('loginBtn').dataset.original = document.getElementById('loginBtn').innerHTML;
 
+        // Regex para validar email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         // =============================================================
         // LOGIN
         // =============================================================
-        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            // Obtener valores
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             const msg = document.getElementById('loginMsg');
             const btn = document.getElementById('loginBtn');
 
+            // Validar campos
             if (!email || !password) {
                 showMsg(msg, '❌ Completa todos los campos.', 'error');
                 return;
             }
 
+            // Validar email
             if (!emailRegex.test(email)) {
                 showMsg(msg, '❌ Formato de email inválido.', 'error');
                 return;
             }
 
+            // Activar estado de carga
             setLoading(btn, true);
             showMsg(msg, '⏳ Verificando credenciales...', 'info');
 
             try {
+                // Petición al servidor
                 const res = await fetch('http://localhost:5285/api/Auth/login', {
                     method: 'POST',
                     headers: {
@@ -369,6 +450,7 @@
 
                 const data = await res.json();
 
+                // Manejar errores
                 if (!res.ok) {
                     if (res.status === 401 || res.status === 403) {
                         showMsg(msg, '❌ Credenciales incorrectas.', 'error');
@@ -379,23 +461,16 @@
                     return;
                 }
 
-                // 🛠️ Corrección aplicada: Soporta tanto minúsculas como mayúsculas en las propiedades devueltas por la API
-                const tokenValue = data.token || data.Token;
-                const userValue = data.usuario || data.Usuario || data.email || data.Email;
-                const roleValue = data.rol || data.Rol || 'Usuario';
+                // Guardar credenciales en localStorage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('usuario', data.usuario);
+                localStorage.setItem('rol', data.rol || 'Usuario');
 
-                if (!tokenValue) {
-                    showMsg(msg, '❌ Error: La API no devolvió un token válido.', 'error');
-                    setLoading(btn, false);
-                    return;
-                }
-
-                localStorage.setItem('token', tokenValue);
-                localStorage.setItem('usuario', userValue);
-                localStorage.setItem('rol', roleValue);
-
+                // Mostrar éxito y redirigir
                 showMsg(msg, '✅ Login exitoso. Redirigiendo...', 'success');
-                setTimeout(() => window.location.href = 'usuarios.html', 1500);
+
+                //  Redirige a dashboard.html
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
 
             } catch (error) {
                 console.error('Error:', error);
@@ -404,6 +479,9 @@
             }
         });
 
+        // =============================================================
+        // LIMPIAR MENSAJES AL ESCRIBIR
+        // =============================================================
         document.querySelectorAll('#loginEmail, #loginPassword').forEach(el => {
             el.addEventListener('input', () => {
                 const msg = document.getElementById('loginMsg');
@@ -412,6 +490,9 @@
             });
         });
 
+        // =============================================================
+        // CONSOLA
+        // =============================================================
         console.log('%c🛒 MiniMarket - Login', 'font-size:18px; font-weight:bold; color:#2ecc71;');
         console.log('%c📌 Credenciales de prueba:', 'font-weight:bold;');
         console.log('   📧 admin@minimarket.com');
