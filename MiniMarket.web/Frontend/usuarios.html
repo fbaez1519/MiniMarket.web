@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniMarket - Usuarios</title>
+
+    <!-- ===== CDN ===== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== RESET & GLOBAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: linear-gradient(145deg, #0f1a2e, #1a2a4a);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .navbar-custom .navbar-brand {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-custom .navbar-brand span {
+            color: #2ecc71;
+        }
+
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .navbar-custom .nav-link.active {
+            color: #2ecc71 !important;
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+        .navbar-custom .nav-link i {
+            margin-right: 6px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 2rem 2rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            color: #1a2a4a;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .page-header h1 i {
+            color: #2ecc71;
+            margin-right: 10px;
+        }
+
+        .page-header p {
+            color: #7f8c8d;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .page-header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-primary-custom {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.6rem 1.6rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+            white-space: nowrap;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(46, 204, 113, 0.4);
+            color: #fff;
+        }
+
+        .btn-outline-custom {
+            border: 2px solid #e8edf3;
+            background: transparent;
+            color: #7f8c8d;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-custom:hover {
+            border-color: #1a2a4a;
+            color: #1a2a4a;
+            background: rgba(26, 42, 74, 0.04);
+        }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action.edit {
+            background: rgba(52, 152, 219, 0.10);
+            color: #3498db;
+        }
+
+        .btn-action.edit:hover {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-action.delete {
+            background: rgba(231, 76, 60, 0.10);
+            color: #e74c3c;
+        }
+
+        .btn-action.delete:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-action.toggle {
+            background: rgba(46, 204, 113, 0.10);
+            color: #2ecc71;
+        }
+
+        .btn-action.toggle:hover {
+            background: #2ecc71;
+            color: #fff;
+        }
+
+        .btn-action.password {
+            background: rgba(241, 196, 15, 0.10);
+            color: #f1c40f;
+        }
+
+        .btn-action.password:hover {
+            background: #f1c40f;
+            color: #fff;
+        }
+
+        /* ===== TABLA ===== */
+        .table-wrapper {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .table-wrapper .table {
+            margin-bottom: 0;
+        }
+
+        .table-wrapper thead {
+            background: #f8f9fc;
+        }
+
+        .table-wrapper thead th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #2c3e50;
+            border-bottom: 2px solid #eef1f5;
+            padding: 0.9rem 1rem;
+        }
+
+        .table-wrapper tbody td {
+            padding: 0.7rem 1rem;
+            vertical-align: middle;
+            border-color: #f0f2f5;
+            font-size: 0.9rem;
+        }
+
+        .table-wrapper tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        /* ===== BADGES ===== */
+        .badge-status {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.active {
+            background: rgba(46, 204, 113, 0.12);
+            color: #27ae60;
+        }
+
+        .badge-status.inactive {
+            background: rgba(231, 76, 60, 0.10);
+            color: #e74c3c;
+        }
+
+        .badge-role {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+        }
+
+        .badge-role.admin {
+            background: rgba(231, 76, 60, 0.10);
+            color: #c0392b;
+        }
+
+        .badge-role.vendedor {
+            background: rgba(52, 152, 219, 0.10);
+            color: #1a5276;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 1rem;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e8edf3;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h5 {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-custom .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-custom .modal-header {
+            border-bottom: 2px solid #f0f2f5;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .modal-custom .modal-header .modal-title {
+            font-weight: 700;
+            color: #1a2a4a;
+        }
+
+        .modal-custom .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-custom .modal-footer {
+            border-top: 2px solid #f0f2f5;
+            padding: 1rem 1.5rem;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control-custom {
+            border: 2px solid #e8edf3;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background: #fafbfc;
+        }
+
+        .form-control-custom:focus {
+            border-color: #2c4a7a;
+            box-shadow: 0 0 0 4px rgba(44, 74, 122, 0.08);
+            background: #fff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .page-header .btn-primary-custom {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-wrapper {
+                border-radius: 12px;
+            }
+
+            .table-wrapper thead th,
+            .table-wrapper tbody td {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .btn-action {
+                width: 28px;
+                height: 28px;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-custom {
+                padding: 0.6rem 1rem;
+            }
+
+            .table-wrapper {
+                font-size: 0.75rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0a4a8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- NAVBAR                                                       -->
+    <!-- ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-store"></i> Mini<span>Market</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="clientes.html">
+                        <i class="fas fa-users"></i> Clientes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="productos.html">
+                        <i class="fas fa-box"></i> Productos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="categorias.html">
+                        <i class="fas fa-tags"></i> Categorías
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="usuarios.html">
+                        <i class="fas fa-user-cog"></i> Usuarios
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="logoutNav">
+                        <i class="fas fa-sign-out-alt"></i> Salir
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- MAIN CONTENT                                                 -->
+<!-- ============================================================ -->
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <div class="page-header-left">
+            <h1><i class="fas fa-user-cog"></i> Usuarios</h1>
+            <p>Gestión de usuarios del sistema</p>
+        </div>
+        <button class="btn btn-primary-custom" id="btnNuevoUsuario">
+            <i class="fas fa-plus"></i> Nuevo Usuario
+        </button>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-wrapper">
+        <div class="table-responsive">
+            <table class="table" id="tablaUsuarios">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th class="text-center" style="min-width: 150px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyUsuarios">
+                    <!-- Los datos se cargan con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Nuevo / Editar Usuario                                -->
+<!-- ============================================================ -->
+<div class="modal fade modal-custom" id="modalUsuario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">
+                    <i class="fas fa-user-plus" style="color: #2ecc71;"></i> Nuevo Usuario
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUsuario">
+                    <input type="hidden" id="usuarioId" value="0" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Nombre Completo *</label>
+                            <input type="text" class="form-control form-control-custom" id="uNombre" required placeholder="Ej: Juan Pérez" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Email *</label>
+                            <input type="email" class="form-control form-control-custom" id="uEmail" required placeholder="ejemplo@email.com" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Username *</label>
+                            <input type="text" class="form-control form-control-custom" id="uUsername" required placeholder="usuario123" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Rol *</label>
+                            <select class="form-control form-control-custom" id="uRol">
+                                <option value="Vendedor">Vendedor</option>
+                                <option value="Administrador">Administrador</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1" id="passwordFields">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Contraseña *</label>
+                            <input type="password" class="form-control form-control-custom" id="uPassword" placeholder="Mínimo 6 caracteres" minlength="6" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Confirmar Contraseña *</label>
+                            <input type="password" class="form-control form-control-custom" id="uConfirmPassword" placeholder="Repite la contraseña" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="uActivo" checked>
+                                <label class="form-check-label fw-semibold" for="uActivo">
+                                    Usuario Activo
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary-custom" id="btnGuardarUsuario">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Confirmar Eliminar                                    -->
+<!-- ============================================================ -->
+<div class="modal fade modal-custom" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle"></i> Confirmar
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-trash-alt" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+                <p class="fw-bold mb-1">¿Estás seguro de eliminar este usuario?</p>
+                <p class="text-muted" style="font-size: 0.9rem;">Esta acción no se puede deshacer.</p>
+                <input type="hidden" id="deleteId" />
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Cambiar Contraseña                                    -->
+<!-- ============================================================ -->
+<div class="modal fade modal-custom" id="modalPassword" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: #f1c40f;">
+                    <i class="fas fa-key"></i> Cambiar Contraseña
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formPassword">
+                    <input type="hidden" id="passwordUserId" />
+                    <div class="mb-3">
+                        <label class="form-label-custom">Nueva Contraseña *</label>
+                        <input type="password" class="form-control form-control-custom" id="nuevaPassword" placeholder="Mínimo 6 caracteres" required minlength="6" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-custom">Confirmar Contraseña *</label>
+                        <input type="password" class="form-control form-control-custom" id="confirmNuevaPassword" placeholder="Repite la contraseña" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary-custom" id="btnCambiarPassword">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCRIPTS                                                      -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script>
+    (function() {
+        // =============================================================
+        // VERIFICAR AUTENTICACIÓN Y PERMISOS (MODO PRUEBAS)
+        // =============================================================
+        const token = localStorage.getItem('token');
+        const rol = localStorage.getItem('rol');
+
+        console.log('🔍 Token existe:', token ? '✅ Sí' : '❌ No');
+        console.log('🔍 Rol:', rol);
+        console.log('🔍 Token (primeros 50 chars):', token ? token.substring(0, 50) + '...' : 'No hay token');
+
+        // ⚠️ VALIDACIONES DESACTIVADAS PARA PRUEBAS ⚠️
+        // if (!token) {
+        //     window.location.href = 'login.html';
+        //     return;
+        // }
+
+        // if (rol !== 'Administrador') {
+        //     alert('⚠️ Acceso denegado. Solo administradores pueden ver esta página.');
+        //     window.location.href = 'dashboard.html';
+        //     return;
+        // }
+
+        console.log('✅ Acceso permitido en modo pruebas');
+
+        // =============================================================
+        // CONFIGURACIÓN
+        // =============================================================
+        const API_URL = 'http://localhost:5285/api/Usuarios';
+        let modalUsuario = null;
+        let modalEliminar = null;
+        let modalPassword = null;
+        let editando = false;
+
+        // =============================================================
+        // FUNCIÓN PARA ABRIR MODAL (GLOBAL)
+        // =============================================================
+        window.abrirNuevo = function() {
+            try {
+                console.log('✅ Ejecutando abrirNuevo()');
+                editando = false;
+                document.getElementById('modalTitle').innerHTML =
+                    '<i class="fas fa-user-plus" style="color: #2ecc71;"></i> Nuevo Usuario';
+                document.getElementById('formUsuario').reset();
+                document.getElementById('usuarioId').value = '0';
+                document.getElementById('uActivo').checked = true;
+                document.getElementById('uRol').value = 'Vendedor';
+                document.getElementById('passwordFields').style.display = 'flex';
+                document.getElementById('uPassword').required = true;
+                document.getElementById('uConfirmPassword').required = true;
+
+                if (modalUsuario) {
+                    modalUsuario.show();
+                    console.log('✅ Modal abierto correctamente');
+                } else {
+                    console.error('❌ modalUsuario es null');
+                    modalUsuario = new bootstrap.Modal(document.getElementById('modalUsuario'));
+                    modalUsuario.show();
+                    console.log('✅ Modal reinicializado y abierto');
+                }
+            } catch (error) {
+                console.error('❌ Error en abrirNuevo:', error);
+                alert('Error al abrir el formulario: ' + error.message);
+            }
+        };
+
+        // =============================================================
+        // DOMContentLoaded
+        // =============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM cargado correctamente');
+
+            // Inicializar modales
+            try {
+                modalUsuario = new bootstrap.Modal(document.getElementById('modalUsuario'));
+                modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
+                modalPassword = new bootstrap.Modal(document.getElementById('modalPassword'));
+                console.log('✅ Modales inicializados correctamente');
+            } catch (error) {
+                console.error('❌ Error al inicializar modales:', error);
+            }
+
+            // Cargar usuarios
+            cargarUsuarios();
+
+            // =============================================================
+            // ASIGNAR EVENTOS MANUALMENTE
+            // =============================================================
+            const btnNuevo = document.getElementById('btnNuevoUsuario');
+            if (btnNuevo) {
+                // Eliminar eventos previos
+                const nuevoBtn = btnNuevo.cloneNode(true);
+                btnNuevo.parentNode.replaceChild(nuevoBtn, btnNuevo);
+                nuevoBtn.addEventListener('click', function(e) {
+                    console.log('✅ Botón "Nuevo Usuario" clickeado');
+                    window.abrirNuevo();
+                });
+                console.log('✅ Evento asignado al botón Nuevo Usuario');
+            } else {
+                console.error('❌ Botón "btnNuevoUsuario" no encontrado');
+            }
+
+            document.getElementById('btnGuardarUsuario').addEventListener('click', guardarUsuario);
+            document.getElementById('btnConfirmarEliminar').addEventListener('click', eliminarUsuario);
+            document.getElementById('btnCambiarPassword').addEventListener('click', cambiarPassword);
+
+            document.getElementById('logoutNav').addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('usuario');
+                localStorage.removeItem('rol');
+                window.location.href = 'login.html';
+            });
+
+            console.log('%c🛒 MiniMarket - Usuarios', 'font-size:18px; font-weight:bold; color:#2ecc71;');
+            console.log('%c🔗 API: ' + API_URL, 'color:#7f8c8d;');
+        });
+
+        // =============================================================
+        // CARGAR USUARIOS
+        // =============================================================
+        async function cargarUsuarios() {
+            const tbody = document.getElementById('tbodyUsuarios');
+
+            try {
+                const res = await fetch(API_URL, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                // ⚠️ REDIRECCIÓN DESACTIVADA PARA PRUEBAS ⚠️
+                // if (res.status === 401 || res.status === 403) {
+                //     window.location.href = 'login.html';
+                //     return;
+                // }
+
+                if (res.status === 401 || res.status === 403) {
+                    console.warn('⚠️ Error 401/403, pero permitiendo pruebas');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                                    <h5>⚠️ Error de autenticación (401)</h5>
+                                    <p class="text-muted">Token inválido o expirado. Revisa la consola.</p>
+                                    <button class="btn btn-primary-custom mt-2" onclick="window.location.href='login.html'">
+                                        Ir al Login
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                if (!res.ok) throw new Error('Error al cargar usuarios');
+
+                const usuarios = await res.json();
+
+                if (!usuarios || usuarios.length === 0) {
+                    tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <i class="fas fa-users"></i>
+                                        <h5>No hay usuarios registrados</h5>
+                                        <p class="text-muted">Haz clic en "Nuevo Usuario" para agregar uno</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    return;
+                }
+
+                tbody.innerHTML = usuarios.map(u => {
+                    const rolClass = u.rol === 'Administrador' ? 'admin' : 'vendedor';
+                    const rolLabel = u.rol || 'Vendedor';
+
+                    return `
+                            <tr>
+                                <td><strong>${u.id}</strong></td>
+                                <td>${u.nombreCompleto}</td>
+                                <td>${u.email}</td>
+                                <td><span class="fw-semibold">${u.username}</span></td>
+                                <td><span class="badge-role ${rolClass}">${rolLabel}</span></td>
+                                <td>
+                                    <span class="badge-status ${u.estaActivo !== false ? 'active' : 'inactive'}">
+                                        ${u.estaActivo !== false ? 'Activo' : 'Inactivo'}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn-action edit" onclick="editarUsuario(${u.id})" title="Editar">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button class="btn-action password" onclick="abrirCambiarPassword(${u.id})" title="Cambiar Contraseña">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    <button class="btn-action delete" onclick="confirmarEliminar(${u.id})" title="Eliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button class="btn-action toggle" onclick="toggleEstado(${u.id}, ${!u.estaActivo})" title="${u.estaActivo !== false ? 'Desactivar' : 'Activar'}">
+                                        <i class="fas ${u.estaActivo !== false ? 'fa-pause' : 'fa-play'}"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error:', error);
+                tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+                                    <h5>Error al cargar usuarios</h5>
+                                    <p class="text-muted">Verifica que el servidor esté ejecutándose en http://localhost:5285</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+            }
+        }
+
+        // =============================================================
+        // EDITAR USUARIO
+        // =============================================================
+        async function editarUsuario(id) {
+            try {
+                const res = await fetch(`${API_URL}/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error('Error al obtener usuario');
+
+                const u = await res.json();
+                editando = true;
+
+                document.getElementById('modalTitle').innerHTML =
+                    '<i class="fas fa-user-edit" style="color: #3498db;"></i> Editar Usuario';
+                document.getElementById('usuarioId').value = u.id;
+                document.getElementById('uNombre').value = u.nombreCompleto || '';
+                document.getElementById('uEmail').value = u.email || '';
+                document.getElementById('uUsername').value = u.username || '';
+                document.getElementById('uRol').value = u.rol || 'Vendedor';
+                document.getElementById('uActivo').checked = u.estaActivo !== false;
+                document.getElementById('passwordFields').style.display = 'none';
+                document.getElementById('uPassword').required = false;
+                document.getElementById('uConfirmPassword').required = false;
+
+                modalUsuario.show();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error al cargar los datos del usuario');
+            }
+        }
+
+        // =============================================================
+        // GUARDAR USUARIO
+        // =============================================================
+        async function guardarUsuario() {
+            const id = document.getElementById('usuarioId').value;
+            const password = document.getElementById('uPassword').value;
+            const confirmPassword = document.getElementById('uConfirmPassword').value;
+
+            const data = {
+                nombreCompleto: document.getElementById('uNombre').value.trim(),
+                email: document.getElementById('uEmail').value.trim(),
+                username: document.getElementById('uUsername').value.trim(),
+                rol: document.getElementById('uRol').value,
+                estaActivo: document.getElementById('uActivo').checked
+            };
+
+            if (!data.nombreCompleto || !data.email || !data.username) {
+                alert('⚠️ Los campos Nombre, Email y Username son obligatorios.');
+                return;
+            }
+
+            const btn = document.getElementById('btnGuardarUsuario');
+            const originalText = btn.innerHTML;
+
+            if (!editando) {
+                if (!password || password.length < 6) {
+                    alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    alert('⚠️ Las contraseñas no coinciden.');
+                    return;
+                }
+                data.password = password;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+
+            try {
+                const method = editando ? 'PUT' : 'POST';
+                const body = editando ? { ...data, id: parseInt(id) } : data;
+
+                const res = await fetch(API_URL, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                const result = await res.json();
+
+                if (!res.ok) {
+                    alert('❌ ' + (result.mensaje || result.title || 'Error al guardar el usuario'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    return;
+                }
+
+                modalUsuario.hide();
+                cargarUsuarios();
+                alert('✅ Usuario guardado exitosamente');
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+
+        // =============================================================
+        // CONFIRMAR ELIMINAR
+        // =============================================================
+        function confirmarEliminar(id) {
+            document.getElementById('deleteId').value = id;
+            modalEliminar.show();
+        }
+
+        // =============================================================
+        // ELIMINAR USUARIO
+        // =============================================================
+        async function eliminarUsuario() {
+            const id = document.getElementById('deleteId').value;
+            const btn = document.getElementById('btnConfirmarEliminar');
+            const originalText = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+            try {
+                const res = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    const result = await res.json();
+                    alert('❌ ' + (result.mensaje || 'Error al eliminar el usuario'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    return;
+                }
+
+                modalEliminar.hide();
+                cargarUsuarios();
+                alert('✅ Usuario eliminado exitosamente');
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+
+        // =============================================================
+        // TOGGLE ESTADO
+        // =============================================================
+        async function toggleEstado(id, activar) {
+            const action = activar ? 'activar' : 'desactivar';
+            const msg = activar ? 'activado' : 'desactivado';
+
+            if (!confirm(`¿Estás seguro de ${msg} este usuario?`)) return;
+
+            try {
+                const res = await fetch(`${API_URL}/${id}/${action}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!res.ok) {
+                    const result = await res.json();
+                    alert('❌ ' + (result.mensaje || 'Error al cambiar el estado'));
+                    return;
+                }
+
+                cargarUsuarios();
+                alert(`✅ Usuario ${msg} exitosamente`);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+            }
+        }
+
+        // =============================================================
+        // ABRIR CAMBIAR CONTRASEÑA
+        // =============================================================
+        function abrirCambiarPassword(id) {
+            document.getElementById('passwordUserId').value = id;
+            document.getElementById('formPassword').reset();
+            modalPassword.show();
+        }
+
+        // =============================================================
+        // CAMBIAR CONTRASEÑA
+        // =============================================================
+        async function cambiarPassword() {
+            const id = document.getElementById('passwordUserId').value;
+            const nuevaPassword = document.getElementById('nuevaPassword').value;
+            const confirmPassword = document.getElementById('confirmNuevaPassword').value;
+
+            if (!nuevaPassword || nuevaPassword.length < 6) {
+                alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
+                return;
+            }
+
+            if (nuevaPassword !== confirmPassword) {
+                alert('⚠️ Las contraseñas no coinciden.');
+                return;
+            }
+
+            const btn = document.getElementById('btnCambiarPassword');
+            const originalText = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+            try {
+                const res = await fetch(`${API_URL}/${id}/cambiar-password`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ nuevaPassword })
+                });
+
+                const result = await res.json();
+
+                if (!res.ok) {
+                    alert('❌ ' + (result.mensaje || 'Error al cambiar la contraseña'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    return;
+                }
+
+                modalPassword.hide();
+                alert('✅ Contraseña cambiada exitosamente');
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    })();
+</script>
+
+</body>
+</html>

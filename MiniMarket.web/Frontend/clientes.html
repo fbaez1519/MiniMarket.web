@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MiniMarket - Clientes</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== RESET & GLOBAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: linear-gradient(145deg, #0f1a2e, #1a2a4a);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .navbar-custom .navbar-brand {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-custom .navbar-brand span {
+            color: #2ecc71;
+        }
+
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .navbar-custom .nav-link.active {
+            color: #2ecc71 !important;
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+        .navbar-custom .nav-link i {
+            margin-right: 6px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 2rem 2rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            color: #1a2a4a;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .page-header h1 i {
+            color: #2ecc71;
+            margin-right: 10px;
+        }
+
+        .page-header p {
+            color: #7f8c8d;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .page-header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-primary-custom {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.6rem 1.6rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+            white-space: nowrap;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(46, 204, 113, 0.4);
+            color: #fff;
+        }
+
+        .btn-outline-custom {
+            border: 2px solid #e8edf3;
+            background: transparent;
+            color: #7f8c8d;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-custom:hover {
+            border-color: #1a2a4a;
+            color: #1a2a4a;
+            background: rgba(26, 42, 74, 0.04);
+        }
+
+        .btn-sm-custom {
+            padding: 0.3rem 0.9rem;
+            font-size: 0.8rem;
+            border-radius: 8px;
+        }
+
+        /* ===== TABLA ===== */
+        .table-wrapper {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .table-wrapper .table {
+            margin-bottom: 0;
+        }
+
+        .table-wrapper thead {
+            background: #f8f9fc;
+        }
+
+        .table-wrapper thead th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #2c3e50;
+            border-bottom: 2px solid #eef1f5;
+            padding: 0.9rem 1rem;
+        }
+
+        .table-wrapper tbody td {
+            padding: 0.7rem 1rem;
+            vertical-align: middle;
+            border-color: #f0f2f5;
+            font-size: 0.9rem;
+        }
+
+        .table-wrapper tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        /* ===== BADGES ===== */
+        .badge-status {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.active {
+            background: rgba(46, 204, 113, 0.12);
+            color: #27ae60;
+        }
+
+        .badge-status.inactive {
+            background: rgba(231, 76, 60, 0.10);
+            color: #e74c3c;
+        }
+
+        .badge-tipo {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            background: #eef1f5;
+            color: #2c3e50;
+        }
+
+        .badge-tipo.vip {
+            background: rgba(241, 196, 15, 0.15);
+            color: #b7950b;
+        }
+
+        .badge-tipo.mayorista {
+            background: rgba(52, 152, 219, 0.12);
+            color: #1a5276;
+        }
+
+        /* ===== BOTONES DE ACCIÓN ===== */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action.edit {
+            background: rgba(52, 152, 219, 0.10);
+            color: #3498db;
+        }
+
+        .btn-action.edit:hover {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-action.delete {
+            background: rgba(231, 76, 60, 0.10);
+            color: #e74c3c;
+        }
+
+        .btn-action.delete:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-action.toggle {
+            background: rgba(46, 204, 113, 0.10);
+            color: #2ecc71;
+        }
+
+        .btn-action.toggle:hover {
+            background: #2ecc71;
+            color: #fff;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 1rem;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e8edf3;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h5 {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-custom .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-custom .modal-header {
+            border-bottom: 2px solid #f0f2f5;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .modal-custom .modal-header .modal-title {
+            font-weight: 700;
+            color: #1a2a4a;
+        }
+
+        .modal-custom .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-custom .modal-footer {
+            border-top: 2px solid #f0f2f5;
+            padding: 1rem 1.5rem;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control-custom {
+            border: 2px solid #e8edf3;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background: #fafbfc;
+        }
+
+        .form-control-custom:focus {
+            border-color: #2c4a7a;
+            box-shadow: 0 0 0 4px rgba(44, 74, 122, 0.08);
+            background: #fff;
+        }
+
+        .form-control-custom.is-invalid {
+            border-color: #e74c3c;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .page-header .btn-primary-custom {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-wrapper {
+                border-radius: 12px;
+            }
+
+            .table-wrapper thead th,
+            .table-wrapper tbody td {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .btn-action {
+                width: 28px;
+                height: 28px;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-custom {
+                padding: 0.6rem 1rem;
+            }
+
+            .table-wrapper {
+                font-size: 0.75rem;
+            }
+
+            .badge-status,
+            .badge-tipo {
+                font-size: 0.6rem;
+                padding: 2px 8px;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0a4a8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- NAVBAR                                                       -->
+    <!-- ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-store"></i> Mini<span>Market</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="clientes.html">
+                        <i class="fas fa-users"></i> Clientes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-box"></i> Productos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="logoutNav">
+                        <i class="fas fa-sign-out-alt"></i> Salir
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- MAIN CONTENT                                                 -->
+<!-- ============================================================ -->
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <div class="page-header-left">
+            <h1><i class="fas fa-users"></i> Clientes</h1>
+            <p>Gestión de clientes del sistema</p>
+        </div>
+        <button class="btn btn-primary-custom" id="btnNuevoCliente">
+            <i class="fas fa-plus"></i> Nuevo Cliente
+        </button>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-wrapper">
+        <div class="table-responsive">
+            <table class="table" id="tablaClientes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Documento</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th class="text-center" style="min-width: 120px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyClientes">
+                    <!-- Los datos se cargan con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Nuevo / Editar Cliente                                -->
+<!-- ============================================================ -->
+<div class="modal fade modal-custom" id="modalCliente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">
+                    <i class="fas fa-user-plus" style="color: #2ecc71;"></i> Nuevo Cliente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCliente">
+                    <input type="hidden" id="clienteId" value="0" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Documento *</label>
+                            <input type="text" class="form-control form-control-custom" id="cDocumento" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Nombre Completo *</label>
+                            <input type="text" class="form-control form-control-custom" id="cNombre" required />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Email *</label>
+                            <input type="email" class="form-control form-control-custom" id="cEmail" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Teléfono</label>
+                            <input type="text" class="form-control form-control-custom" id="cTelefono" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Dirección</label>
+                            <input type="text" class="form-control form-control-custom" id="cDireccion" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Tipo Cliente</label>
+                            <select class="form-control form-control-custom" id="cTipoCliente">
+                                <option value="Regular">Regular</option>
+                                <option value="VIP">VIP</option>
+                                <option value="Mayorista">Mayorista</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Descuento (%)</label>
+                            <input type="number" class="form-control form-control-custom" id="cDescuento"
+                            step="0.01" min="0" max="100" placeholder="0" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Límite de Crédito</label>
+                            <input type="number" class="form-control form-control-custom" id="cLimiteCredito"
+                            step="0.01" min="0" placeholder="0" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Género</label>
+                            <select class="form-control form-control-custom" id="cGenero">
+                                <option value="">No especificado</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Fecha Nacimiento</label>
+                            <input type="date" class="form-control form-control-custom" id="cFechaNacimiento" />
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cActivo" checked />
+                                <label class="form-check-label fw-semibold" for="cActivo">
+                                    Cliente Activo
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-primary-custom" id="btnGuardarCliente">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Confirmar Eliminar                                    -->
+<!-- ============================================================ -->
+<div class="modal fade modal-custom" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle"></i> Confirmar
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-trash-alt" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+                <p class="fw-bold mb-1">¿Estás seguro de eliminar este cliente?</p>
+                <p class="text-muted" style="font-size: 0.9rem;">Esta acción no se puede deshacer.</p>
+                <input type="hidden" id="deleteId" />
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCRIPTS                                                      -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script>
+    // =============================================================
+    // CONFIGURACIÓN
+    // =============================================================
+    const API_URL = 'http://localhost:5285/api/Clientes';
+    let modalCliente = null;
+    let modalEliminar = null;
+    let editando = false;
+
+    // =============================================================
+    // DOMContentLoaded
+    // =============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inicializar modales
+        modalCliente = new bootstrap.Modal(document.getElementById('modalCliente'));
+        modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
+
+        // Cargar clientes
+        cargarClientes();
+
+        // Eventos
+        document.getElementById('btnNuevoCliente').addEventListener('click', abrirNuevo);
+        document.getElementById('btnGuardarCliente').addEventListener('click', guardarCliente);
+        document.getElementById('btnConfirmarEliminar').addEventListener('click', eliminarCliente);
+
+        // Logout
+        document.getElementById('logoutNav').addEventListener('click', function (e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('rol');
+            window.location.href = 'login.html';
+        });
+
+        console.log('%c🛒 MiniMarket - Clientes', 'font-size:18px; font-weight:bold; color:#2ecc71;');
+        console.log('%c🔗 API: ' + API_URL, 'color:#7f8c8d;');
+    });
+
+    // =============================================================
+    // CARGAR CLIENTES
+    // =============================================================
+    async function cargarClientes() {
+        const tbody = document.getElementById('tbodyClientes');
+
+        try {
+            const res = await fetch(API_URL);
+            if (!res.ok) throw new Error('Error al cargar clientes');
+
+            const clientes = await res.json();
+
+            if (!clientes || clientes.length === 0) {
+                tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8">
+                                <div class="empty-state">
+                                    <i class="fas fa-users"></i>
+                                    <h5>No hay clientes registrados</h5>
+                                    <p class="text-muted">Haz clic en "Nuevo Cliente" para agregar uno</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                return;
+            }
+
+            tbody.innerHTML = clientes.map(c => {
+                const tipoBadge = c.tipoCliente === 'VIP' ? 'vip' :
+                    c.tipoCliente === 'Mayorista' ? 'mayorista' : '';
+                return `
+                        <tr>
+                            <td><strong>${c.id}</strong></td>
+                            <td><span class="fw-semibold">${c.documento}</span></td>
+                            <td>${c.nombreCompleto}</td>
+                            <td>${c.email}</td>
+                            <td>${c.telefono || '-'}</td>
+                            <td><span class="badge-tipo ${tipoBadge}">${c.tipoCliente}</span></td>
+                            <td>
+                                <span class="badge-status ${c.estaActivo ? 'active' : 'inactive'}">
+                                    ${c.estaActivo ? 'Activo' : 'Inactivo'}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn-action edit" onclick="editarCliente(${c.id})" title="Editar">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                                <button class="btn-action delete" onclick="confirmarEliminar(${c.id})" title="Eliminar">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                <button class="btn-action toggle" onclick="toggleEstado(${c.id}, ${!c.estaActivo})" title="${c.estaActivo ? 'Desactivar' : 'Activar'}">
+                                    <i class="fas ${c.estaActivo ? 'fa-pause' : 'fa-play'}"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error:', error);
+            tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+                                <h5>Error al cargar clientes</h5>
+                                <p class="text-muted">Verifica que el servidor esté ejecutándose en http://localhost:5285</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+        }
+    }
+
+    // =============================================================
+    // ABRIR NUEVO
+    // =============================================================
+    function abrirNuevo() {
+        editando = false;
+        document.getElementById('modalTitle').innerHTML =
+            '<i class="fas fa-user-plus" style="color: #2ecc71;"></i> Nuevo Cliente';
+        document.getElementById('formCliente').reset();
+        document.getElementById('clienteId').value = '0';
+        document.getElementById('cActivo').checked = true;
+        document.getElementById('cTipoCliente').value = 'Regular';
+        document.getElementById('cDescuento').value = '';
+        document.getElementById('cLimiteCredito').value = '';
+        document.getElementById('cGenero').value = '';
+        document.getElementById('cFechaNacimiento').value = '';
+        modalCliente.show();
+    }
+
+    // =============================================================
+    // EDITAR CLIENTE
+    // =============================================================
+    async function editarCliente(id) {
+        try {
+            const res = await fetch(`${API_URL}/${id}`);
+            if (!res.ok) throw new Error('Error al obtener cliente');
+
+            const c = await res.json();
+            editando = true;
+
+            document.getElementById('modalTitle').innerHTML =
+                '<i class="fas fa-user-edit" style="color: #3498db;"></i> Editar Cliente';
+            document.getElementById('clienteId').value = c.id;
+            document.getElementById('cDocumento').value = c.documento || '';
+            document.getElementById('cNombre').value = c.nombreCompleto || '';
+            document.getElementById('cEmail').value = c.email || '';
+            document.getElementById('cTelefono').value = c.telefono || '';
+            document.getElementById('cDireccion').value = c.direccion || '';
+            document.getElementById('cTipoCliente').value = c.tipoCliente || 'Regular';
+            document.getElementById('cDescuento').value = c.descuentoEspecial || '';
+            document.getElementById('cLimiteCredito').value = c.limiteCredito || '';
+            document.getElementById('cGenero').value = c.genero || '';
+            document.getElementById('cFechaNacimiento').value = c.fechaNacimiento ? c.fechaNacimiento.split('T')[0] : '';
+            document.getElementById('cActivo').checked = c.estaActivo !== undefined ? c.estaActivo : true;
+
+            modalCliente.show();
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error al cargar los datos del cliente');
+        }
+    }
+
+    // =============================================================
+    // GUARDAR CLIENTE
+    // =============================================================
+    async function guardarCliente() {
+        const id = document.getElementById('clienteId').value;
+        const data = {
+            documento: document.getElementById('cDocumento').value.trim(),
+            nombreCompleto: document.getElementById('cNombre').value.trim(),
+            email: document.getElementById('cEmail').value.trim(),
+            telefono: document.getElementById('cTelefono').value.trim(),
+            direccion: document.getElementById('cDireccion').value.trim(),
+            tipoCliente: document.getElementById('cTipoCliente').value,
+            descuentoEspecial: parseFloat(document.getElementById('cDescuento').value) || null,
+            limiteCredito: parseFloat(document.getElementById('cLimiteCredito').value) || null,
+            genero: document.getElementById('cGenero').value || null,
+            fechaNacimiento: document.getElementById('cFechaNacimiento').value || null,
+            estaActivo: document.getElementById('cActivo').checked
+        };
+
+        // Validaciones básicas
+        if (!data.documento || !data.nombreCompleto || !data.email) {
+            alert('⚠️ Los campos Documento, Nombre y Email son obligatorios.');
+            return;
+        }
+
+        const btn = document.getElementById('btnGuardarCliente');
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+
+        try {
+            const method = editando ? 'PUT' : 'POST';
+            const body = editando ? { ...data, id: parseInt(id) } : data;
+
+            const res = await fetch(API_URL, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            const result = await res.json();
+
+            if (!res.ok) {
+                alert('❌ ' + (result.mensaje || result.title || 'Error al guardar el cliente'));
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                return;
+            }
+
+            modalCliente.hide();
+            cargarClientes();
+            alert('✅ Cliente guardado exitosamente');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+
+    // =============================================================
+    // CONFIRMAR ELIMINAR
+    // =============================================================
+    function confirmarEliminar(id) {
+        document.getElementById('deleteId').value = id;
+        modalEliminar.show();
+    }
+
+    // =============================================================
+    // ELIMINAR CLIENTE
+    // =============================================================
+    async function eliminarCliente() {
+        const id = document.getElementById('deleteId').value;
+        const btn = document.getElementById('btnConfirmarEliminar');
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!res.ok) {
+                const result = await res.json();
+                alert('❌ ' + (result.mensaje || 'Error al eliminar el cliente'));
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                return;
+            }
+
+            modalEliminar.hide();
+            cargarClientes();
+            alert('✅ Cliente eliminado exitosamente');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+
+    // =============================================================
+    // TOGGLE ESTADO (ACTIVAR / DESACTIVAR)
+    // =============================================================
+    async function toggleEstado(id, activar) {
+        const action = activar ? 'activar' : 'desactivar';
+        const msg = activar ? 'activado' : 'desactivado';
+
+        if (!confirm(`¿Estás seguro de ${msg} este cliente?`)) return;
+
+        try {
+            const res = await fetch(`${API_URL}/${id}/${action}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!res.ok) {
+                const result = await res.json();
+                alert('❌ ' + (result.mensaje || 'Error al cambiar el estado'));
+                return;
+            }
+
+            cargarClientes();
+            alert(`✅ Cliente ${msg} exitosamente`);
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+        }
+    }
+</script>
+
+</body>
+</html>
