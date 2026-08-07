@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniMarket - Nueva Venta</title>
+
+    <!-- ===== CDN ===== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(145deg, #0f1a2e, #1a2a4a);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .navbar-custom .navbar-brand {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        .navbar-custom .navbar-brand span {
+            color: #2ecc71;
+        }
+
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-weight: 500;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #fff !important;
+        }
+
+        .main-content {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            color: #1a2a4a;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .page-header h1 i {
+            color: #2ecc71;
+            margin-right: 10px;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.6rem 1.6rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(46, 204, 113, 0.4);
+            color: #fff;
+        }
+
+        .btn-danger-custom {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .card-custom {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .card-custom:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+        }
+
+        .card-custom-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        .card-custom-title i {
+            color: #2ecc71;
+            margin-right: 8px;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control-custom {
+            border: 2px solid #e8edf3;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background: #fafbfc;
+        }
+
+        .form-control-custom:focus {
+            border-color: #2c4a7a;
+            box-shadow: 0 0 0 4px rgba(44, 74, 122, 0.08);
+            background: #fff;
+        }
+
+        .table-productos thead {
+            background: #f8f9fc;
+        }
+
+        .table-productos thead th {
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #2c3e50;
+            border-bottom: 2px solid #eef1f5;
+            padding: 0.7rem 0.8rem;
+        }
+
+        .table-productos tbody td {
+            padding: 0.6rem 0.8rem;
+            vertical-align: middle;
+            border-color: #f0f2f5;
+            font-size: 0.9rem;
+        }
+
+        .table-productos tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        .total-box {
+            background: #f8f9fc;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            text-align: right;
+        }
+
+        .total-box .label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .total-box .value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a2a4a;
+        }
+
+        .total-box .value.total {
+            font-size: 2rem;
+            color: #2ecc71;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box .dropdown-menu {
+            width: 100%;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .search-box .dropdown-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+
+        .search-box .dropdown-item:hover {
+            background: #e8f0fe;
+        }
+
+        .search-box .dropdown-item .product-price {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+
+        .badge-stock {
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .badge-stock.normal {
+            background: rgba(46, 204, 113, 0.12);
+            color: #27ae60;
+        }
+
+        .badge-stock.low {
+            background: rgba(241, 196, 15, 0.15);
+            color: #b7950b;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- NAVBAR                                                       -->
+    <!-- ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-store"></i> Mini<span>Market</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-th-large"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ventas.html">
+                            <i class="fas fa-shopping-cart"></i> Ventas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="nueva-venta.html">
+                            <i class="fas fa-plus-circle"></i> Nueva Venta
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutNav">
+                            <i class="fas fa-sign-out-alt"></i> Salir
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT                                                 -->
+    <!-- ============================================================ -->
+    <div class="main-content">
+
+        <div class="page-header">
+            <div>
+                <h1><i class="fas fa-plus-circle"></i> Nueva Venta</h1>
+                <p class="text-muted">Registrar una nueva venta en el sistema</p>
+            </div>
+            <div>
+                <a href="ventas.html" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- FORMULARIO                                                   -->
+        <!-- ============================================================ -->
+        <form id="ventaForm">
+
+            <div class="row g-4">
+                <!-- COLUMNA IZQUIERDA: Cliente y Productos -->
+                <div class="col-lg-8">
+                    <!-- Datos del Cliente -->
+                    <div class="card-custom mb-4">
+                        <div class="card-custom-title">
+                            <i class="fas fa-user"></i> Datos del Cliente
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label-custom">Cliente</label>
+                                <select class="form-control form-control-custom" id="clienteId">
+                                    <option value="0">Venta sin cliente</option>
+                                    <!-- Se cargan con JavaScript -->
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Método de Pago</label>
+                                <select class="form-control form-control-custom" id="tipoPago">
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Tarjeta">Tarjeta</option>
+                                    <option value="Transferencia">Transferencia</option>
+                                    <option value="Credito">Crédito</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-12">
+                                <label class="form-label-custom">Comentarios</label>
+                                <input type="text" class="form-control form-control-custom" id="comentarios" placeholder="Observaciones de la venta">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agregar Productos -->
+                    <div class="card-custom mb-4">
+                        <div class="card-custom-title">
+                            <i class="fas fa-box"></i> Agregar Productos
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Buscar Producto</label>
+                                <div class="search-box">
+                                    <input type="text" class="form-control form-control-custom" id="buscarProducto"
+                                    placeholder="Buscar por nombre o código..." autocomplete="off">
+                                    <div class="dropdown-menu" id="productosDropdown"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Cantidad</label>
+                                <input type="number" class="form-control form-control-custom" id="cantidadProducto" value="1" min="1">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="button" class="btn btn-primary-custom w-100" id="btnAgregarProducto">
+                                    <i class="fas fa-plus"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Productos -->
+                    <div class="card-custom">
+                        <div class="card-custom-title">
+                            <i class="fas fa-list"></i> Productos de la Venta
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-productos">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Subtotal</th>
+                                        <th style="width: 50px;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detallesBody">
+                                    <tr id="emptyDetalle">
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="fas fa-box-open fa-2x d-block mb-2"></i>
+                                            No hay productos agregados
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: Totales -->
+                <div class="col-lg-4">
+                    <div class="card-custom">
+                        <div class="card-custom-title">
+                            <i class="fas fa-calculator"></i> Resumen de la Venta
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Subtotal</span>
+                                <span class="fw-bold" id="subtotalDisplay">$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <span class="text-muted">Impuesto (18%)</span>
+                                <span class="fw-bold" id="impuestoDisplay">$0.00</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span class="fw-bold fs-5">Total</span>
+                                <span class="fw-bold fs-4 text-success" id="totalDisplay">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="total-box mt-3">
+                            <div class="label">Número de productos</div>
+                            <div class="value" id="cantidadProductosTotal">0</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-custom w-100 mt-3" id="btnCompletarVenta">
+                            <i class="fas fa-check"></i> Completar Venta
+                        </button>
+
+                        <button type="button" class="btn btn-outline-secondary w-100 mt-2" id="btnLimpiarVenta">
+                            <i class="fas fa-trash-alt"></i> Limpiar Venta
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SCRIPTS                                                      -->
+    <!-- ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <script>
+        // =============================================================
+        // CONFIGURACIÓN
+        // =============================================================
+        const API_URL = 'http://localhost:5285/api';
+        const token = localStorage.getItem('token');
+
+        let detalles = [];
+        let productos = [];
+
+        // =============================================================
+        // DOMContentLoaded
+        // =============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            cargarClientes();
+            cargarProductos();
+
+            document.getElementById('buscarProducto').addEventListener('input', buscarProductos);
+            document.getElementById('btnAgregarProducto').addEventListener('click', agregarProducto);
+            document.getElementById('btnLimpiarVenta').addEventListener('click', limpiarVenta);
+            document.getElementById('ventaForm').addEventListener('submit', completarVenta);
+
+            document.getElementById('logoutNav').addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('usuario');
+                localStorage.removeItem('rol');
+                window.location.href = 'login.html';
+            });
+
+            console.log('%c🛒 MiniMarket - Nueva Venta', 'font-size:18px; font-weight:bold; color:#2ecc71;');
+        });
+
+        // =============================================================
+        // CARGAR CLIENTES
+        // =============================================================
+        async function cargarClientes() {
+            try {
+                const res = await fetch(`${API_URL}/Clientes`);
+                if (!res.ok) throw new Error('Error al cargar clientes');
+
+                const clientes = await res.json();
+                const select = document.getElementById('clienteId');
+
+                clientes.forEach(c => {
+                    if (c.estaActivo !== false) {
+                        const option = document.createElement('option');
+                        option.value = c.id;
+                        option.textContent = `${c.nombreCompleto} (${c.documento || 'Sin doc'})`;
+                        select.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar clientes:', error);
+            }
+        }
+
+        // =============================================================
+        // CARGAR PRODUCTOS
+        // =============================================================
+        async function cargarProductos() {
+            try {
+                const res = await fetch(`${API_URL}/Productos`);
+                if (!res.ok) throw new Error('Error al cargar productos');
+
+                productos = await res.json();
+                // Solo productos activos y con stock > 0
+                productos = productos.filter(p => p.estaActivo !== false && p.stock > 0);
+            } catch (error) {
+                console.error('Error al cargar productos:', error);
+            }
+        }
+
+        // =============================================================
+        // BUSCAR PRODUCTOS
+        // =============================================================
+        function buscarProductos() {
+            const query = document.getElementById('buscarProducto').value.toLowerCase().trim();
+            const dropdown = document.getElementById('productosDropdown');
+
+            if (!query || query.length < 2) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            const resultados = productos.filter(p =>
+                p.nombre.toLowerCase().includes(query) ||
+                (p.codigo && p.codigo.toLowerCase().includes(query))
+            );
+
+            if (resultados.length === 0) {
+                dropdown.innerHTML = `<div class="dropdown-item text-muted">No se encontraron productos</div>`;
+            } else {
+                dropdown.innerHTML = resultados.map(p => `
+                    <div class="dropdown-item" onclick="seleccionarProducto(${p.id})">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><strong>${p.nombre}</strong> <small class="text-muted">(${p.codigo || 'Sin código'})</small></span>
+                            <span class="product-price">$${p.precioVenta.toFixed(2)}</span>
+                        </div>
+                        <small class="text-muted">Stock: ${p.stock} unidades</small>
+                    </div>
+                `).join('');
+                dropdown.classList.add('show');
+            }
+        }
+
+        // =============================================================
+        // SELECCIONAR PRODUCTO
+        // =============================================================
+        window.seleccionarProducto = function(id) {
+            const producto = productos.find(p => p.id === id);
+            if (!producto) return;
+
+            document.getElementById('buscarProducto').value = producto.nombre;
+            document.getElementById('productosDropdown').classList.remove('show');
+
+            // Encontrar el producto en la lista de detalles
+            const existente = detalles.find(d => d.productoId === id);
+            if (existente) {
+                existente.cantidad += 1;
+            } else {
+                detalles.push({
+                    productoId: producto.id,
+                    nombre: producto.nombre,
+                    cantidad: 1,
+                    precioUnitario: producto.precioVenta,
+                    stock: producto.stock
+                });
+            }
+
+            renderizarDetalles();
+            calcularTotales();
+
+            // Enfocar cantidad
+            document.getElementById('cantidadProducto').focus();
+            document.getElementById('cantidadProducto').select();
+        };
+
+        // =============================================================
+        // AGREGAR PRODUCTO MANUALMENTE
+        // =============================================================
+        function agregarProducto() {
+            const query = document.getElementById('buscarProducto').value.trim();
+            const cantidad = parseInt(document.getElementById('cantidadProducto').value) || 1;
+
+            if (!query) {
+                alert('⚠️ Busca un producto primero.');
+                return;
+            }
+
+            // Buscar el producto por nombre o código
+            const producto = productos.find(p =>
+                p.nombre.toLowerCase() === query.toLowerCase() ||
+                p.codigo?.toLowerCase() === query.toLowerCase()
+            );
+
+            if (!producto) {
+                alert('⚠️ Producto no encontrado. Busca por nombre o código.');
+                return;
+            }
+
+            if (cantidad > producto.stock) {
+                alert(`⚠️ Stock insuficiente. Disponible: ${producto.stock}`);
+                return;
+            }
+
+            // Agregar al detalle
+            const existente = detalles.find(d => d.productoId === producto.id);
+            if (existente) {
+                if (existente.cantidad + cantidad > producto.stock) {
+                    alert(`⚠️ Stock insuficiente. Disponible: ${producto.stock}`);
+                    return;
+                }
+                existente.cantidad += cantidad;
+            } else {
+                detalles.push({
+                    productoId: producto.id,
+                    nombre: producto.nombre,
+                    cantidad: cantidad,
+                    precioUnitario: producto.precioVenta,
+                    stock: producto.stock
+                });
+            }
+
+            document.getElementById('buscarProducto').value = '';
+            document.getElementById('cantidadProducto').value = 1;
+
+            renderizarDetalles();
+            calcularTotales();
+            document.getElementById('buscarProducto').focus();
+        }
+
+        // =============================================================
+        // ELIMINAR PRODUCTO DEL DETALLE
+        // =============================================================
+        window.eliminarDetalle = function(index) {
+            detalles.splice(index, 1);
+            renderizarDetalles();
+            calcularTotales();
+        };
+
+        // =============================================================
+        // CAMBIAR CANTIDAD
+        // =============================================================
+        window.cambiarCantidad = function(index, nuevaCantidad) {
+            if (nuevaCantidad < 1) nuevaCantidad = 1;
+            const detalle = detalles[index];
+            if (nuevaCantidad > detalle.stock) {
+                alert(`⚠️ Stock insuficiente. Disponible: ${detalle.stock}`);
+                return;
+            }
+            detalle.cantidad = nuevaCantidad;
+            renderizarDetalles();
+            calcularTotales();
+        };
+
+        // =============================================================
+        // RENDERIZAR DETALLES
+        // =============================================================
+        function renderizarDetalles() {
+            const tbody = document.getElementById('detallesBody');
+
+            if (detalles.length === 0) {
+                tbody.innerHTML = `
+                    <tr id="emptyDetalle">
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="fas fa-box-open fa-2x d-block mb-2"></i>
+                            No hay productos agregados
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = detalles.map((d, i) => `
+                <tr>
+                    <td>
+                        <strong>${d.nombre}</strong>
+                        <br>
+                        <small class="text-muted">Stock: ${d.stock}</small>
+                    </td>
+                    <td>
+                        <div class="input-group" style="width: 120px;">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="cambiarCantidad(${i}, ${d.cantidad - 1})">-</button>
+                            <input type="number" class="form-control form-control-sm text-center" value="${d.cantidad}" min="1" max="${d.stock}"
+                                   style="width: 50px;" onchange="cambiarCantidad(${i}, parseInt(this.value) || 1)">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="cambiarCantidad(${i}, ${d.cantidad + 1})">+</button>
+                        </div>
+                    </td>
+                    <td>$${d.precioUnitario.toFixed(2)}</td>
+                    <td>$${(d.cantidad * d.precioUnitario).toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-danger-custom btn-sm" onclick="eliminarDetalle(${i})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // =============================================================
+        // CALCULAR TOTALES
+        // =============================================================
+        function calcularTotales() {
+            const subtotal = detalles.reduce((sum, d) => sum + (d.cantidad * d.precioUnitario), 0);
+            const impuesto = subtotal * 0.18;
+            const total = subtotal + impuesto;
+            const cantidad = detalles.reduce((sum, d) => sum + d.cantidad, 0);
+
+            document.getElementById('subtotalDisplay').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('impuestoDisplay').textContent = `$${impuesto.toFixed(2)}`;
+            document.getElementById('totalDisplay').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('cantidadProductosTotal').textContent = cantidad;
+        }
+
+        // =============================================================
+        // LIMPIAR VENTA
+        // =============================================================
+        function limpiarVenta() {
+            if (detalles.length === 0) return;
+
+            if (confirm('¿Estás seguro de limpiar todos los productos?')) {
+                detalles = [];
+                renderizarDetalles();
+                calcularTotales();
+                document.getElementById('buscarProducto').focus();
+            }
+        }
+
+        // =============================================================
+        // COMPLETAR VENTA
+        // =============================================================
+        async function completarVenta(e) {
+            e.preventDefault();
+
+            if (detalles.length === 0) {
+                alert('⚠️ Agrega al menos un producto a la venta.');
+                return;
+            }
+
+            const clienteId = parseInt(document.getElementById('clienteId').value) || 0;
+            const tipoPago = document.getElementById('tipoPago').value;
+            const comentarios = document.getElementById('comentarios').value.trim();
+
+            const data = {
+                clienteId: clienteId > 0 ? clienteId : null,
+                tipoPago: tipoPago,
+                comentarios: comentarios,
+                detalles: detalles.map(d => ({
+                    productoId: d.productoId,
+                    cantidad: d.cantidad,
+                    precioUnitario: d.precioUnitario,
+                    descuento: 0
+                }))
+            };
+
+            const btn = document.getElementById('btnCompletarVenta');
+            const originalText = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Procesando...';
+
+            try {
+                const res = await fetch(`${API_URL}/Ventas`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (!res.ok) {
+                    alert('❌ ' + (result.mensaje || 'Error al registrar la venta'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    return;
+                }
+
+                alert('✅ Venta registrada exitosamente!');
+                limpiarVenta();
+                document.getElementById('clienteId').value = '0';
+                document.getElementById('tipoPago').value = 'Efectivo';
+                document.getElementById('comentarios').value = '';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+
+        // =============================================================
+        // TECLA ENTER PARA BUSCAR/AGREGAR
+        // =============================================================
+        document.getElementById('buscarProducto').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                agregarProducto();
+            }
+        });
+
+        document.getElementById('cantidadProducto').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                agregarProducto();
+            }
+        });
+
+        // Cerrar dropdown al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('productosDropdown');
+            const searchBox = document.querySelector('.search-box');
+            if (!searchBox.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -7,7 +7,7 @@ namespace Minimarket.Domain.Entities
     public class Venta : BaseEntity
     {
         // ═══════════════════════════════════════════════════════
-        // 📌 PROPIEDADES NORMALES (ya las tienes)
+        // 📌 PROPIEDADES NORMALES 
         // ═══════════════════════════════════════════════════════
         public string NumeroFactura { get; set; } = string.Empty;
         public string Serie { get; set; } = "001";

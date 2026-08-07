@@ -2,7 +2,7 @@
 
 namespace Minimarket.Domain.Entities
 {
-    public class DetalleVenta
+    public class DetalleVenta : BaseEntity  // ✅ AHORA HEREDA DE BaseEntity
     {
         public int Id { get; set; }
         public int VentaId { get; set; }
@@ -13,16 +13,22 @@ namespace Minimarket.Domain.Entities
         public decimal Subtotal { get; set; }
 
         // ═══════════════════════════════════════════════════════
-        // 🔗 PROPIEDADES DE NAVEGACIÓN - AGREGADAS
+        // 🔗 PROPIEDADES DE NAVEGACIÓN
         // ═══════════════════════════════════════════════════════
         public virtual Venta Venta { get; set; } = null!;
         public virtual Producto Producto { get; set; } = null!;
 
+        /// <summary>
+        /// Calcula el subtotal del detalle
+        /// </summary>
         public void CalcularSubtotal()
         {
             Subtotal = (Cantidad * PrecioUnitario) - Descuento;
         }
 
+        /// <summary>
+        /// Valida los datos del detalle
+        /// </summary>
         public void Validar()
         {
             if (Cantidad <= 0)

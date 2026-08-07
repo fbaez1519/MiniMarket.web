@@ -6,7 +6,7 @@ namespace MiniMarket.web.Services;
 
 public class ProductoService : IProductoService
 {
-    private static List<Producto> _productos = new List<Producto>();
+    public static List<Producto> _productos = new List<Producto>();  // ✅ PÚBLICA
     private static int _nextId = 1;
     private readonly IMapper _mapper;
 
@@ -14,7 +14,6 @@ public class ProductoService : IProductoService
     {
         _mapper = mapper;
 
-        // Datos de ejemplo
         if (!_productos.Any())
         {
             _productos.AddRange(new List<Producto>
@@ -92,6 +91,13 @@ public class ProductoService : IProductoService
         return await Task.FromResult(_mapper.Map<ProductoDTO>(producto));
     }
 
+    // ✅ MÉTODO AGREGADO
+    public async Task<Producto?> GetEntityByIdAsync(int id)
+    {
+        var producto = _productos.FirstOrDefault(p => p.Id == id);
+        return await Task.FromResult(producto);
+    }
+
     public async Task<ProductoDTO?> GetByCodigoAsync(string codigo)
     {
         var producto = _productos.FirstOrDefault(p => p.Codigo == codigo);
@@ -100,7 +106,6 @@ public class ProductoService : IProductoService
 
     public async Task<ProductoDTO> CreateAsync(ProductoCreateDTO productoDto)
     {
-        // Validar código único
         if (_productos.Any(p => p.Codigo == productoDto.Codigo))
             throw new Exception($"Ya existe un producto con el código {productoDto.Codigo}");
 
@@ -122,11 +127,9 @@ public class ProductoService : IProductoService
         if (producto == null)
             throw new Exception($"Producto con ID {productoDto.Id} no encontrado");
 
-        // Validar código único (excepto el mismo producto)
         if (_productos.Any(p => p.Codigo == productoDto.Codigo && p.Id != productoDto.Id))
             throw new Exception($"Ya existe otro producto con el código {productoDto.Codigo}");
 
-        // Actualizar propiedades
         producto.Codigo = productoDto.Codigo;
         producto.Nombre = productoDto.Nombre;
         producto.Descripcion = productoDto.Descripcion;

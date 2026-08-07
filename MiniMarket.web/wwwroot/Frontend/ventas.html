@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniMarket - Ventas</title>
+
+    <!-- ===== CDN ===== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== RESET & GLOBAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: linear-gradient(145deg, #0f1a2e, #1a2a4a);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .navbar-custom .navbar-brand {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-custom .navbar-brand span {
+            color: #2ecc71;
+        }
+
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .navbar-custom .nav-link.active {
+            color: #2ecc71 !important;
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+        .navbar-custom .nav-link i {
+            margin-right: 6px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 2rem 2rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            color: #1a2a4a;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .page-header h1 i {
+            color: #2ecc71;
+            margin-right: 10px;
+        }
+
+        .page-header p {
+            color: #7f8c8d;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .page-header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-primary-custom {
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.6rem 1.6rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+            white-space: nowrap;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(46, 204, 113, 0.4);
+            color: #fff;
+        }
+
+        .btn-outline-custom {
+            border: 2px solid #e8edf3;
+            background: transparent;
+            color: #7f8c8d;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-custom:hover {
+            border-color: #1a2a4a;
+            color: #1a2a4a;
+            background: rgba(26, 42, 74, 0.04);
+        }
+
+        /* ===== TABLA ===== */
+        .table-wrapper {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .table-wrapper .table {
+            margin-bottom: 0;
+        }
+
+        .table-wrapper thead {
+            background: #f8f9fc;
+        }
+
+        .table-wrapper thead th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #2c3e50;
+            border-bottom: 2px solid #eef1f5;
+            padding: 0.9rem 1rem;
+        }
+
+        .table-wrapper tbody td {
+            padding: 0.7rem 1rem;
+            vertical-align: middle;
+            border-color: #f0f2f5;
+            font-size: 0.9rem;
+        }
+
+        .table-wrapper tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        /* ===== BADGES ===== */
+        .badge-status {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.completada {
+            background: rgba(46, 204, 113, 0.12);
+            color: #27ae60;
+        }
+
+        .badge-status.anulada {
+            background: rgba(231, 76, 60, 0.10);
+            color: #e74c3c;
+        }
+
+        .badge-status.pendiente {
+            background: rgba(241, 196, 15, 0.15);
+            color: #b7950b;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 3.5rem 1rem;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e8edf3;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h5 {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .page-header .btn-primary-custom {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-wrapper {
+                border-radius: 12px;
+            }
+
+            .table-wrapper thead th,
+            .table-wrapper tbody td {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-custom {
+                padding: 0.6rem 1rem;
+            }
+
+            .table-wrapper {
+                font-size: 0.75rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0a4a8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- NAVBAR                                                       -->
+    <!-- ============================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-store"></i> Mini<span>Market</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="clientes.html">
+                        <i class="fas fa-users"></i> Clientes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="productos.html">
+                        <i class="fas fa-box"></i> Productos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="categorias.html">
+                        <i class="fas fa-tags"></i> Categorías
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="ventas.html">
+                        <i class="fas fa-shopping-cart"></i> Ventas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="logoutNav">
+                        <i class="fas fa-sign-out-alt"></i> Salir
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- MAIN CONTENT                                                 -->
+<!-- ============================================================ -->
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <div class="page-header-left">
+            <h1><i class="fas fa-shopping-cart"></i> Ventas</h1>
+            <p>Gestión de ventas del sistema</p>
+        </div>
+        <button class="btn btn-primary-custom" id="btnNuevaVenta">
+            <i class="fas fa-plus"></i> Nueva Venta
+        </button>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-wrapper">
+        <div class="table-responsive">
+            <table class="table" id="tablaVentas">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Factura</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th class="text-center" style="min-width: 150px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyVentas">
+                    <!-- Los datos se cargan con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Detalle de Venta                                      -->
+<!-- ============================================================ -->
+<div class="modal fade modal-custom" id="modalDetalle" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-receipt" style="color: #2ecc71;"></i> Detalle de Venta
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detalleBody">
+                <!-- Se carga con JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL: Anular Venta                                          -->
+<!-- ============================================================ -->
+<div class="modal fade modal-custom" id="modalAnular" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle"></i> Anular Venta
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de anular esta venta?</p>
+                <div class="mb-3">
+                    <label class="form-label">Motivo de anulación</label>
+                    <textarea class="form-control" id="motivoAnulacion" rows="2" placeholder="Ingresa el motivo..."></textarea>
+                </div>
+                <input type="hidden" id="anularId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarAnular">
+                    <i class="fas fa-ban"></i> Anular Venta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCRIPTS                                                      -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script>
+    // =============================================================
+    // CONFIGURACIÓN
+    // =============================================================
+    const API_URL = 'http://localhost:5285/api/Ventas';
+    const token = localStorage.getItem('token');
+
+    let modalDetalle = null;
+    let modalAnular = null;
+
+    // =============================================================
+    // DOMContentLoaded
+    // =============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ DOM cargado correctamente');
+
+        // Verificar autenticación
+        if (!token) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Inicializar modales
+        try {
+            modalDetalle = new bootstrap.Modal(document.getElementById('modalDetalle'));
+            modalAnular = new bootstrap.Modal(document.getElementById('modalAnular'));
+            console.log('✅ Modales inicializados');
+        } catch (error) {
+            console.error('❌ Error al inicializar modales:', error);
+        }
+
+        // Cargar ventas
+        cargarVentas();
+
+        // ✅ CORREGIDO: Redirige a nueva-venta.html
+        document.getElementById('btnNuevaVenta').addEventListener('click', function() {
+            window.location.href = 'nueva-venta.html';
+        });
+
+        document.getElementById('btnConfirmarAnular').addEventListener('click', anularVenta);
+
+        document.getElementById('logoutNav').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('rol');
+            window.location.href = 'login.html';
+        });
+
+        console.log('%c🛒 MiniMarket - Ventas', 'font-size:18px; font-weight:bold; color:#2ecc71;');
+        console.log('%c🔗 API: ' + API_URL, 'color:#7f8c8d;');
+    });
+
+    // =============================================================
+    // CARGAR VENTAS
+    // =============================================================
+    async function cargarVentas() {
+        const tbody = document.getElementById('tbodyVentas');
+
+        try {
+            const res = await fetch(API_URL, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (!res.ok) throw new Error('Error al cargar ventas');
+
+            const ventas = await res.json();
+
+            if (!ventas || ventas.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h5>No hay ventas registradas</h5>
+                                <p class="text-muted">Haz clic en "Nueva Venta" para crear una</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = ventas.map(v => {
+                const estadoClass = v.anulada ? 'anulada' :
+                    v.estado === 'Completada' ? 'completada' : 'pendiente';
+                const estadoLabel = v.anulada ? 'Anulada' :
+                    v.estado === 'Completada' ? 'Completada' : 'Pendiente';
+
+                return `
+                    <tr>
+                        <td><strong>${v.id}</strong></td>
+                        <td>${v.numeroFactura || '-'}</td>
+                        <td>${v.fechaVenta ? new Date(v.fechaVenta).toLocaleDateString('es-ES') : '-'}</td>
+                        <td>${v.clienteNombre || 'Cliente'}</td>
+                        <td><strong>$${v.total.toFixed(2)}</strong></td>
+                        <td>
+                            <span class="badge-status ${estadoClass}">
+                                ${estadoLabel}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-info" onclick="verDetalle(${v.id})" title="Ver Detalle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${!v.anulada ? `
+                                <button class="btn btn-sm btn-outline-danger" onclick="abrirAnular(${v.id})" title="Anular">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error:', error);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+                            <h5>Error al cargar ventas</h5>
+                            <p class="text-muted">Verifica que el servidor esté ejecutándose en http://localhost:5285</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // =============================================================
+    // VER DETALLE DE VENTA
+    // =============================================================
+    window.verDetalle = async function(id) {
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!res.ok) throw new Error('Error al obtener detalle');
+
+            const v = await res.json();
+
+            const body = document.getElementById('detalleBody');
+            body.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Factura:</strong> ${v.numeroFactura || '-'}</p>
+                        <p><strong>Fecha:</strong> ${v.fechaVenta ? new Date(v.fechaVenta).toLocaleString('es-ES') : '-'}</p>
+                        <p><strong>Cliente:</strong> ${v.clienteNombre || 'Cliente'}</p>
+                        <p><strong>Vendedor:</strong> ${v.usuarioNombre || 'Usuario'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Estado:</strong> ${v.anulada ? 'Anulada' : v.estado || 'Completada'}</p>
+                        <p><strong>Pago:</strong> ${v.tipoPago || 'Efectivo'}</p>
+                        <p><strong>Subtotal:</strong> $${v.subtotal?.toFixed(2) || '0.00'}</p>
+                        <p><strong>Impuesto:</strong> $${v.impuesto?.toFixed(2) || '0.00'}</p>
+                        <p><strong><h5>Total: $${v.total?.toFixed(2) || '0.00'}</h5></strong></p>
+                    </div>
+                </div>
+                <hr>
+                <h6><i class="fas fa-list"></i> Productos</h6>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${v.detalles && v.detalles.length > 0 ? v.detalles.map(d => `
+                            <tr>
+                                <td>${d.productoNombre || 'Producto'}</td>
+                                <td>${d.cantidad}</td>
+                                <td>$${d.precioUnitario?.toFixed(2) || '0.00'}</td>
+                                <td>$${d.subtotal?.toFixed(2) || '0.00'}</td>
+                            </tr>
+                        `).join('') : `
+                            <tr><td colspan="4" class="text-center">Sin detalles</td></tr>
+                        `}
+                    </tbody>
+                </table>
+            `;
+
+            modalDetalle.show();
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error al cargar el detalle de la venta');
+        }
+    };
+
+    // =============================================================
+    // ABRIR ANULAR
+    // =============================================================
+    window.abrirAnular = function(id) {
+        document.getElementById('anularId').value = id;
+        document.getElementById('motivoAnulacion').value = '';
+        modalAnular.show();
+    };
+
+    // =============================================================
+    // ANULAR VENTA
+    // =============================================================
+    async function anularVenta() {
+        const id = document.getElementById('anularId').value;
+        const motivo = document.getElementById('motivoAnulacion').value.trim();
+
+        if (!motivo) {
+            alert('⚠️ Debes ingresar un motivo de anulación.');
+            return;
+        }
+
+        const btn = document.getElementById('btnConfirmarAnular');
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        try {
+            const res = await fetch(`${API_URL}/${id}/anular`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ motivoAnulacion: motivo })
+            });
+
+            if (!res.ok) {
+                const result = await res.json();
+                alert('❌ ' + (result.mensaje || 'Error al anular la venta'));
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                return;
+            }
+
+            modalAnular.hide();
+            cargarVentas();
+            alert('✅ Venta anulada exitosamente');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión. Verifica que el servidor esté en http://localhost:5285');
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+</script>
+
+</body>
+</html>

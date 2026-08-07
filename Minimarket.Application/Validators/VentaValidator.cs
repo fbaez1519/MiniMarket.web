@@ -13,13 +13,13 @@ public class VentaValidator : AbstractValidator<VentaDTO>
         RuleFor(v => v.Detalles)
             .NotEmpty().WithMessage("La venta debe tener al menos un detalle");
 
-        RuleForEach(v => v.Detalles).SetValidator(new VentaDetalleValidator());
+        RuleForEach(v => v.Detalles).SetValidator(new DetalleVentaValidator());
     }
 }
 
-public class VentaDetalleValidator : AbstractValidator<VentaDetalleDTO>
+public class DetalleVentaValidator : AbstractValidator<DetalleVentaDTO>
 {
-    public VentaDetalleValidator()
+    public DetalleVentaValidator()
     {
         RuleFor(d => d.ProductoId)
             .GreaterThan(0).WithMessage("El ProductoId es obligatorio");
@@ -29,5 +29,8 @@ public class VentaDetalleValidator : AbstractValidator<VentaDetalleDTO>
 
         RuleFor(d => d.PrecioUnitario)
             .GreaterThan(0).WithMessage("El precio unitario debe ser mayor a 0");
+
+        RuleFor(d => d.Subtotal)
+            .GreaterThan(0).WithMessage("El subtotal debe ser mayor a 0");
     }
 }

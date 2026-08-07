@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // ============================================
-//  CONFIGURACIÓN DE CORS
+// 🔥 CONFIGURACIÓN DE CORS
 // ============================================
 builder.Services.AddCors(options =>
 {
@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
 });
 
 // ============================================
-// AUTOMAPPER - MAPPINGS (Corregido para la solución completa)
+// AUTOMAPPER - MAPPINGS (CORREGIDO)
 // ============================================
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -91,7 +91,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // ============================================
-// ARCHIVOS ESTÁTICOS (OBLIGATORIO PARA EL FRONTEND)
+// ARCHIVOS ESTÁTICOS (Frontend)
 // ============================================
 app.UseStaticFiles();
 
@@ -107,4 +107,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// ============================================
+// EJECUTAR
+// ============================================
 app.Run();
