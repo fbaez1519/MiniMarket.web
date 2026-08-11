@@ -924,11 +924,11 @@
                 <i class="fas fa-tags"></i> Categorías
                 <span class="badge badge-warning" id="badgeCategorias">0</span>
             </a>
-            <a href="usuarios.html" class="sidebar-nav-item">
+            <!-- ✅ OCULTO PARA VENDEDORES (se controla con JavaScript) -->
+            <a href="usuarios.html" class="sidebar-nav-item" id="menuUsuarios">
                 <i class="fas fa-user-cog"></i> Usuarios
                 <span class="badge badge-danger" id="badgeUsuarios">0</span>
             </a>
-            <!-- ✅ CORREGIDO: Enlace a Ventas -->
             <a href="ventas.html" class="sidebar-nav-item">
                 <i class="fas fa-shopping-cart"></i> Ventas
                 <span class="badge badge-success" id="badgeVentas">0</span>
@@ -936,11 +936,11 @@
 
             <div class="sidebar-nav-title">Gestión</div>
 
-            <a href="#" class="sidebar-nav-item">
-                <i class="fas fa-file-invoice"></i> Reportes
-            </a>
-            <a href="#" class="sidebar-nav-item">
+            <a href="#" class="sidebar-nav-item" id="menuConfiguracion">
                 <i class="fas fa-cog"></i> Configuración
+            </a>
+            <a href="#" class="sidebar-nav-item" id="menuReportes">
+                <i class="fas fa-file-invoice"></i> Reportes
             </a>
         </nav>
 
@@ -1220,6 +1220,67 @@
             now.toLocaleDateString('es-ES', options);
 
         // =============================================================
+        // OCULTAR OPCIONES SEGÚN ROL (VERSIÓN MEJORADA)
+        // =============================================================
+        function actualizarMenuPorRol() {
+            const rol = localStorage.getItem('rol');
+
+            // Elementos que SOLO ve el Administrador
+            const menuUsuarios = document.getElementById('menuUsuarios');
+            const menuConfiguracion = document.getElementById('menuConfiguracion');
+
+            // ✅ ELIMINAR COMPLETAMENTE EL ELEMENTO DEL DOM si es Vendedor
+            if (rol !== 'Administrador') {
+                // Ocultar Usuarios
+                if (menuUsuarios) {
+                    menuUsuarios.style.display = 'none';
+                    menuUsuarios.style.visibility = 'hidden';
+                    menuUsuarios.style.pointerEvents = 'none';
+                    menuUsuarios.style.opacity = '0';
+                    menuUsuarios.style.height = '0';
+                    menuUsuarios.style.padding = '0';
+                    menuUsuarios.style.margin = '0';
+                    menuUsuarios.style.overflow = 'hidden';
+                }
+                // Ocultar Configuración
+                if (menuConfiguracion) {
+                    menuConfiguracion.style.display = 'none';
+                    menuConfiguracion.style.visibility = 'hidden';
+                    menuConfiguracion.style.pointerEvents = 'none';
+                    menuConfiguracion.style.opacity = '0';
+                    menuConfiguracion.style.height = '0';
+                    menuConfiguracion.style.padding = '0';
+                    menuConfiguracion.style.margin = '0';
+                    menuConfiguracion.style.overflow = 'hidden';
+                }
+                console.log('🔒 Modo Vendedor - Opciones de administrador eliminadas');
+            } else {
+                // Mostrar elementos
+                if (menuUsuarios) {
+                    menuUsuarios.style.display = 'flex';
+                    menuUsuarios.style.visibility = 'visible';
+                    menuUsuarios.style.pointerEvents = 'auto';
+                    menuUsuarios.style.opacity = '1';
+                    menuUsuarios.style.height = 'auto';
+                    menuUsuarios.style.padding = '';
+                    menuUsuarios.style.margin = '';
+                    menuUsuarios.style.overflow = '';
+                }
+                if (menuConfiguracion) {
+                    menuConfiguracion.style.display = 'flex';
+                    menuConfiguracion.style.visibility = 'visible';
+                    menuConfiguracion.style.pointerEvents = 'auto';
+                    menuConfiguracion.style.opacity = '1';
+                    menuConfiguracion.style.height = 'auto';
+                    menuConfiguracion.style.padding = '';
+                    menuConfiguracion.style.margin = '';
+                    menuConfiguracion.style.overflow = '';
+                }
+                console.log('👑 Modo Administrador - Todas las opciones visibles');
+            }
+        }
+
+        // =============================================================
         // CARGAR DATOS DEL USUARIO DESDE localStorage
         // =============================================================
         function loadUserData() {
@@ -1235,6 +1296,8 @@
             document.getElementById('headerUserName').textContent = usuario;
             document.getElementById('headerUserRole').textContent = rol;
             document.getElementById('headerUserAvatar').textContent = initial;
+
+            actualizarMenuPorRol();
         }
 
         loadUserData();
@@ -1418,6 +1481,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             cargarDashboard();
             initCharts();
+            actualizarMenuPorRol();
         });
 
         // =============================================================

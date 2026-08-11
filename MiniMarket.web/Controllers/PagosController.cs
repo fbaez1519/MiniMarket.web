@@ -1,112 +1,157 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using MiniMarket.web.DTOs.Pago.Requests;
+using MiniMarket.web.DTOs.Pago.Responses;
 using MiniMarket.web.Services;
-using FluentValidation;
 
-[ApiController]
-[Route("api/[controller]")]
-public class PagosController : ControllerBase
+namespace MiniMarket.web.Controllers
 {
-    private readonly IPagoService _pagoService;
-    private readonly IValidator<ProcesarPagoRequestDTO> _validator;
-
-    public PagosController(IPagoService pagoService, IValidator<ProcesarPagoRequestDTO> validator)
-    {
-        _pagoService = pagoService;
-        _validator = validator;
-    }
-
     /// <summary>
-    /// Procesa un pago para una venta
+    /// Controlador de API para la gestión de pagos
     /// </summary>
-    [HttpPost("procesar")]
-    public async Task<IActionResult> ProcesarPago([FromBody] ProcesarPagoRequestDTO request)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PagosController : ControllerBase
     {
-        // Validar request
-        var validationResult = await _validator.ValidateAsync(request);
-        if (!validationResult.IsValid)
+        private readonly IPagoService _pagoService;
+
+        public PagosController(IPagoService pagoService)
         {
-            return BadRequest(new
+            _pagoService = pagoService;
+        }
+
+        /// <summary>
+        /// Procesa un pago para una venta
+        /// </summary>
+        [HttpPost("procesar")]
+        public async Task<IActionResult> ProcesarPago([FromBody] ProcesarPagoRequestDTO request)
+        {
+            // Validación básica
+            if (request == null)
+                return BadRequest(new { Exitoso = false, Mensaje = "Los datos del pago son requeridos" });
+
+            if (request.VentaId <= 0)
+                return BadRequest(new { Exitoso = false, Mensaje = "ID de venta inválido" });
+
+            if (request.Monto <= 0)
+                return BadRequest(new { Exitoso = false, Mensaje = "El monto debe ser mayor a cero" });
+
+            if (string.IsNullOrEmpty(request.MetodoPago))
+                return BadRequest(new { Exitoso = false, Mensaje = "El método de pago es obligatorio" });
+
+            try
             {
-                Exitoso = false,
-                Errores = validationResult.Errors.Select(e => new
-                {
-                    Campo = e.PropertyName,
-                    Mensaje = e.ErrorMessage
-                })
-            });
+                var response = await _pagoService.ProcesarPagoAsync(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Exitoso = false, Mensaje = ex.Message });
+            }
         }
 
-        try
+        /// <summary>
+        /// Verifica el estado de un pago
+        /// </summary>
+        [HttpGet("{pagoId}/estado")]
+        public async Task<IActionResult> VerificarEstado(int pagoId)
         {
-            var response = await _pagoService.ProcesarPagoAsync(request);
-            return Ok(response);
+            try
+            {
+                var response = await _pagoService.VerificarEstadoPagoAsync(pagoId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Exitoso = false, Mensaje = ex.Message });
+            }
         }
-        catch (InvalidOperationException ex)
+
+        /// <summary>
+        /// Reembolsa un pago
+        /// </summary>
+        [HttpPost("{pagoId}/reembolsar")]
+        public async Task<IActionResult> ReembolsarPago(int pagoId, [FromBody] ReembolsoRequestDTO request)
         {
-            return BadRequest(new { Exitoso = false, Mensaje = ex.Message });
+            try
+            {
+                var response = await _pagoService.ReembolsarPagoAsync(pagoId, request?.Motivo);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Exitoso = false, Mensaje = ex.Message });
+            }
         }
-        catch (Exception ex)
+
+        /// <summary>
+        /// Cancela un pago
+        /// </summary>
+        [HttpPost("{pagoId}/cancelar")]
+        public async Task<IActionResult> CancelarPago(int pagoId, [FromBody] CancelarPagoRequestDTO request)
         {
-            return StatusCode(500, new { Exitoso = false, Mensaje = "Error interno del servidor" });
+            try
+            {
+                var result = await _pagoService.CancelarPagoAsync(pagoId, request?.Motivo);
+                return Ok(new { Exitoso = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Exitoso = false, Mensaje = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Obtiene métodos de pago disponibles
+        /// </summary>
+        [HttpGet("metodos")]
+        public async Task<IActionResult> ObtenerMetodos([FromQuery] decimal monto, [FromQuery] string moneda = "PEN")
+        {
+            var metodos = await _pagoService.ObtenerMetodosPagoDisponiblesAsync(monto, moneda);
+            return Ok(metodos);
+        }
+
+        /// <summary>
+        /// Genera comprobante de pago
+        /// </summary>
+        [HttpGet("{pagoId}/comprobante")]
+        public async Task<IActionResult> GenerarComprobante(int pagoId)
+        {
+            try
+            {
+                var comprobante = await _pagoService.GenerarComprobantePagoAsync(pagoId);
+                return Ok(new { Exitoso = true, Comprobante = comprobante });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Exitoso = false, Mensaje = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Valida una tarjeta
+        /// </summary>
+        [HttpPost("validar-tarjeta")]
+        public async Task<IActionResult> ValidarTarjeta([FromBody] PagoTarjetaDTO tarjeta)
+        {
+            var result = await _pagoService.ValidarTarjetaAsync(tarjeta);
+            return Ok(new { Exitoso = result, Mensaje = result ? "Tarjeta válida" : "Tarjeta inválida" });
         }
     }
 
     /// <summary>
-    /// Verifica el estado de un pago
+    /// DTO para solicitar reembolso
     /// </summary>
-    [HttpGet("{pagoId}/estado")]
-    public async Task<IActionResult> VerificarEstado(int pagoId)
+    public class ReembolsoRequestDTO
     {
-        var response = await _pagoService.VerificarEstadoPagoAsync(pagoId);
-        return Ok(response);
+        public string? Motivo { get; set; }
     }
 
     /// <summary>
-    /// Reembolsa un pago
+    /// DTO para solicitar cancelación
     /// </summary>
-    [HttpPost("{pagoId}/reembolsar")]
-    public async Task<IActionResult> ReembolsarPago(int pagoId, [FromBody] string? motivo = null)
+    public class CancelarPagoRequestDTO
     {
-        try
-        {
-            var response = await _pagoService.ReembolsarPagoAsync(pagoId, motivo);
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { Exitoso = false, Mensaje = ex.Message });
-        }
-    }
-
-    /// <summary>
-    /// Cancela un pago
-    /// </summary>
-    [HttpPost("{pagoId}/cancelar")]
-    public async Task<IActionResult> CancelarPago(int pagoId, [FromBody] string? motivo = null)
-    {
-        var result = await _pagoService.CancelarPagoAsync(pagoId, motivo);
-        return Ok(new { Exitoso = result });
-    }
-
-    /// <summary>
-    /// Obtiene métodos de pago disponibles
-    /// </summary>
-    [HttpGet("metodos")]
-    public async Task<IActionResult> ObtenerMetodos([FromQuery] decimal monto, [FromQuery] MonedaEnum moneda)
-    {
-        var metodos = await _pagoService.ObtenerMetodosPagoDisponiblesAsync(monto, moneda);
-        return Ok(metodos);
-    }
-
-    /// <summary>
-    /// Genera comprobante de pago
-    /// </summary>
-    [HttpGet("{pagoId}/comprobante")]
-    public async Task<IActionResult> GenerarComprobante(int pagoId)
-    {
-        var comprobante = await _pagoService.GenerarComprobantePagoAsync(pagoId);
-        return Ok(new { Comprobante = comprobante });
+        public string? Motivo { get; set; }
     }
 }

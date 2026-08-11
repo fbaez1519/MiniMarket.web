@@ -6,11 +6,11 @@ using MiniMarket.web.Services;
 namespace MiniMarket.web.Controllers;
 
 /// <summary>
-/// Controlador de API para la gestión de usuarios
+/// Controlador de API para la gestión de usuarios (SOLO ADMINISTRADORES)
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]  // ✅ CAMBIADO: Solo requiere autenticación, no verifica rol
+[Authorize(Roles = "Administrador")]  // ✅ SOLO ADMINISTRADORES
 public class UsuariosController : ControllerBase
 {
     private readonly IUsuarioService _service;
@@ -21,7 +21,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene todos los usuarios
+    /// Obtiene todos los usuarios (Solo Admin)
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -31,7 +31,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene un usuario por su ID
+    /// Obtiene un usuario por su ID (Solo Admin)
     /// </summary>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
@@ -44,7 +44,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene un usuario por su email
+    /// Obtiene un usuario por su email (Solo Admin)
     /// </summary>
     [HttpGet("email/{email}")]
     public async Task<IActionResult> GetByEmail(string email)
@@ -57,7 +57,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Obtiene un usuario por su username
+    /// Obtiene un usuario por su username (Solo Admin)
     /// </summary>
     [HttpGet("username/{username}")]
     public async Task<IActionResult> GetByUsername(string username)
@@ -70,7 +70,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Crea un nuevo usuario
+    /// Crea un nuevo usuario (Solo Admin)
     /// </summary>
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] UsuarioCreateDTO usuarioDto)
@@ -87,7 +87,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Actualiza un usuario existente
+    /// Actualiza un usuario existente (Solo Admin)
     /// </summary>
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UsuarioUpdateDTO usuarioDto)
@@ -104,7 +104,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Elimina un usuario
+    /// Elimina un usuario (Solo Admin)
     /// </summary>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
@@ -124,7 +124,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Desactiva un usuario
+    /// Desactiva un usuario (Solo Admin)
     /// </summary>
     [HttpPatch("{id}/desactivar")]
     public async Task<IActionResult> Desactivar(int id)
@@ -137,7 +137,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Activa un usuario
+    /// Activa un usuario (Solo Admin)
     /// </summary>
     [HttpPatch("{id}/activar")]
     public async Task<IActionResult> Activar(int id)
@@ -150,7 +150,7 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Cambia la contraseña de un usuario
+    /// Cambia la contraseña de un usuario (Solo Admin)
     /// </summary>
     [HttpPatch("{id}/cambiar-password")]
     public async Task<IActionResult> CambiarPassword(int id, [FromBody] CambiarPasswordDTO dto)
