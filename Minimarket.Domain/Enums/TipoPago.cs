@@ -1,13 +1,21 @@
-﻿namespace Minimarket.Domain.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MiniMarket.web.Enums
 {
-    /// <summary>
-    /// Métodos de pago disponibles
-    /// </summary>
-    public enum TipoPago
+    public enum TipoPagoEnum
     {
+        [Display(Name = "Efectivo")]
         Efectivo = 1,
+        
+        [Display(Name = "Tarjeta Débito/Crédito")]
         Tarjeta = 2,
-        Transferencia = 3,
-        Credito = 4
+        
+        [Display(Name = "Yape")]
+        Yape = 3,
+        
+        [Display(Name = "Plin")]
+        Plin = 4,
+        
+        
     }
 }

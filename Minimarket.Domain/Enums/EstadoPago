@@ -1,0 +1,28 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace MiniMarket.web.Enums
+{
+    public enum EstadoPagoEnum
+    {
+        [Display(Name = "Pendiente")]
+        Pendiente = 1,
+        
+        [Display(Name = "En Proceso")]
+        EnProceso = 2,
+        
+        [Display(Name = "Completado")]
+        Completado = 3,
+        
+        [Display(Name = "Fallido")]
+        Fallido = 4,
+        
+        [Display(Name = "Rechazado")]
+        Rechazado = 5,
+        
+        [Display(Name = "Cancelado")]
+        Cancelado = 6,
+        
+        [Display(Name = "Reembolsado")]
+        Reembolsado = 7
+    }
+}

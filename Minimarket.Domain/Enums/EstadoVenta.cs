@@ -1,12 +1,19 @@
-﻿namespace Minimarket.Domain.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MiniMarket.web.Enums
 {
-    /// <summary>
-    /// Estados posibles de una venta
-    /// </summary>
     public enum EstadoVenta
     {
-        Completada = 1,
-        Cancelada = 2,
-        Pendiente = 3
+        [Display(Name = "Pendiente")]
+        Pendiente = 1,
+        
+        [Display(Name = "Completada")]
+        Completada = 2,
+        
+        [Display(Name = "Anulada")]
+        Anulada = 3,
+        
+        [Display(Name = "Reembolsada")]
+        Reembolsada = 4
     }
 }
