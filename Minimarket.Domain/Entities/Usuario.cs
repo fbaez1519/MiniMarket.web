@@ -1,11 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Minimarket.Domain.Entities
 {
-    /// <summary>
-    /// Representa un usuario del sistema con roles y permisos
-    /// </summary>
     public class Usuario : BaseEntity
     {
         public string NombreCompleto { get; set; } = string.Empty;
@@ -13,12 +10,7 @@ namespace Minimarket.Domain.Entities
         public string Username { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string Rol { get; set; } = "Vendedor";
-
-        /// <summary>
-        /// Indica si el usuario está activo
-        /// </summary>
-        public bool EstaActivo { get; set; } = true;  
-
+        public bool EstaActivo { get; set; } = true;
         public DateTime? UltimoAcceso { get; set; }
         public bool DebeCambiarPassword { get; set; } = false;
         public int IntentosFallidos { get; set; } = 0;
@@ -26,14 +18,10 @@ namespace Minimarket.Domain.Entities
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
-        // 🔗 RELACIONES
         public virtual ICollection<Venta> Ventas { get; set; } = new List<Venta>();
         public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
-        public bool EstaBloqueado()
-        {
-            return FechaBloqueo.HasValue && FechaBloqueo.Value > DateTime.UtcNow;
-        }
+        public bool EstaBloqueado => FechaBloqueo.HasValue && FechaBloqueo.Value > DateTime.UtcNow;
 
         public void Bloquear(int minutos = 30)
         {
