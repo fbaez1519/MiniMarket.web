@@ -1,11 +1,37 @@
+// ============================================================
+// ComprasController - TEMPORALMENTE DESHABILITADO
+// ============================================================
+// Este controlador no compila porque depende de clases que aún
+// no existen (o tienen otro nombre/namespace) en el proyecto:
+//
+//   - Minimarket.Application.DTOs.Compra.CrearCompraDto
+//        -> Existe "CompraCreateDTO" en Minimarket.Application.DTOs (namespace y nombre distintos)
+//   - Minimarket.Application.DTOs.Compra.FiltroCompraDto
+//        -> No existe todavía, hay que crearlo
+//   - Minimarket.Application.Interfaces.ICompraService
+//        -> Falta confirmar/crear
+//   - Minimarket.Application.Exceptions.EntidadNoEncontradaException
+//        -> Falta confirmar/crear
+//
+// Cuando se implemente el módulo completo de Compras
+// (servicio, interfaz, DTOs y excepción), este archivo se
+// puede restaurar quitando el comentario de bloque de abajo.
+// ============================================================
+
+namespace MiniMarket.Web.Controllers
+{
+    // Controlador deshabilitado temporalmente - ver notas arriba.
+}
+
+/*
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Minimarket.Domain.DTOs.Compra;
-using Minimarket.Domain.Exceptions;
-using Minimarket.Domain.Interfaces;
+using Minimarket.Application.DTOs.Compra;
+using Minimarket.Application.Exceptions;
+using Minimarket.Application.Interfaces;
 
 namespace MiniMarket.Web.Controllers
 {
@@ -86,7 +112,7 @@ namespace MiniMarket.Web.Controllers
             try
             {
                 var resultado = await _compraService.AnularCompraAsync(id);
-                
+
                 if (!resultado)
                     return NotFound(new { error = "Compra no encontrada" });
 
@@ -123,3 +149,4 @@ namespace MiniMarket.Web.Controllers
         }
     }
 }
+*/

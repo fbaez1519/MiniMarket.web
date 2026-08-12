@@ -1,5 +1,5 @@
 using Minimarket.Application.DTOs;
-using Minimarket.Application.Validators;
+using Minimarket.Application.Common;
 
 namespace Minimarket.Application.Validators
 {

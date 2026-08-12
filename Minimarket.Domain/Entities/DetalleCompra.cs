@@ -2,12 +2,11 @@
 
 namespace Minimarket.Domain.Entities
 {
-    public class DetalleCompra
+    public class DetalleCompra : BaseEntity  // ← AGREGAR : BaseEntity
     {
         // ═══════════════════════════════════════════════════════
-        // 📌 PROPIEDADES NORMALES (ya las tienes)
+        // 📌 PROPIEDADES NORMALES
         // ═══════════════════════════════════════════════════════
-        public int Id { get; set; }
         public int CompraId { get; set; }
         public int ProductoId { get; set; }
         public int Cantidad { get; set; }
@@ -16,13 +15,13 @@ namespace Minimarket.Domain.Entities
         public decimal Descuento { get; set; }
 
         // ═══════════════════════════════════════════════════════
-        // 🔗 PROPIEDADES DE NAVEGACIÓN (¡AGREGAR ESTAS!)
+        // 🔗 PROPIEDADES DE NAVEGACIÓN
         // ═══════════════════════════════════════════════════════
         public virtual Compra Compra { get; set; } = null!;
         public virtual Producto Producto { get; set; } = null!;
 
         // ═══════════════════════════════════════════════════════
-        // 📌 MÉTODOS (ya los tienes)
+        // 📌 MÉTODOS
         // ═══════════════════════════════════════════════════════
         public void CalcularSubtotal()
         {
