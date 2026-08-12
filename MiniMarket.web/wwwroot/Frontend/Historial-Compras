@@ -1,0 +1,218 @@
+@model List<CompraDto>
+@{
+    ViewData["Title"] = "Historial de Compras";
+    ViewBag.Icon = "file-invoice";
+}
+
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-warning bg-opacity-10 p-3 rounded-3">
+                    <i class="fas fa-file-invoice fa-2x text-warning"></i>
+                </div>
+                <div>
+                    <h2 class="fw-bold mb-0">Historial de Compras</h2>
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-truck me-1"></i>
+                        Total: <strong>@(Model?.Count ?? 0)</strong> compras registradas
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4 animate-fade-in animate-delay-1">
+        <div class="card-header">
+            <h5><i class="fas fa-filter text-primary me-2"></i>Filtros de Búsqueda</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-calendar-start text-primary me-1"></i> Fecha Inicio
+                    </label>
+                    <input type="date" name="FechaInicio" class="form-control" 
+                           value="@ViewBag.FechaInicio" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-calendar-end text-primary me-1"></i> Fecha Fin
+                    </label>
+                    <input type="date" name="FechaFin" class="form-control" 
+                           value="@ViewBag.FechaFin" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-building text-primary me-1"></i> Proveedor
+                    </label>
+                    <select name="ProveedorId" class="form-select">
+                        <option value="">Todos</option>
+                        @foreach (var proveedor in ViewBag.Proveedores)
+                        {
+                            <option value="@proveedor.Id" selected="@(ViewBag.ProveedorId == proveedor.Id.ToString())">
+                                @proveedor.Nombre
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-circle text-primary me-1"></i> Estado
+                    </label>
+                    <select name="Estado" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="1" selected="@(ViewBag.Estado == "1")">
+                            <i class="fas fa-hourglass-half"></i> Pendiente
+                        </option>
+                        <option value="2" selected="@(ViewBag.Estado == "2")">
+                            <i class="fas fa-check-circle text-success"></i> Recibida
+                        </option>
+                        <option value="3" selected="@(ViewBag.Estado == "3")">
+                            <i class="fas fa-times-circle text-danger"></i> Cancelada
+                        </option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i> Filtrar
+                    </button>
+                    <a href="/compras/historial" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo me-1"></i> Limpiar
+                    </a>
+                    <button type="button" class="btn btn-success" onclick="exportarExcel()">
+                        <i class="fas fa-file-excel me-1"></i> Exportar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card animate-fade-in animate-delay-2">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><i class="fas fa-hashtag me-1"></i> N° Compra</th>
+                            <th><i class="fas fa-calendar-alt me-1"></i> Fecha</th>
+                            <th><i class="fas fa-building me-1"></i> Proveedor</th>
+                            <th class="text-end"><i class="fas fa-dollar-sign me-1"></i> Total</th>
+                            <th><i class="fas fa-circle me-1"></i> Estado</th>
+                            <th class="text-center"><i class="fas fa-cog me-1"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var compra in Model)
+                            {
+                                var estadoClass = compra.Estado == EstadoCompra.Recibida ? "success" : 
+                                                 compra.Estado == EstadoCompra.Pendiente ? "warning" : "danger";
+                                var estadoIcon = compra.Estado == EstadoCompra.Recibida ? "fa-check-circle" : 
+                                                compra.Estado == EstadoCompra.Pendiente ? "fa-hourglass-half" : "fa-times-circle";
+                                <tr>
+                                    <td><span class="fw-bold text-primary">@compra.NumeroCompra</span></td>
+                                    <td><span class="text-nowrap">@compra.Fecha.ToString("dd/MM/yyyy HH:mm")</span></td>
+                                    <td>
+                                        <i class="fas fa-store text-secondary me-1"></i>
+                                        @compra.ProveedorNombre
+                                    </td>
+                                    <td class="text-end fw-bold text-success">$@compra.Total.ToString("N2")</td>
+                                    <td>
+                                        <span class="badge bg-@estadoClass">
+                                            <i class="fas @estadoIcon me-1"></i>
+                                            @compra.EstadoTexto
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex gap-1 justify-content-center">
+                                            <a href="/compras/detalle/@compra.Id" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            @if (compra.Estado != EstadoCompra.Cancelada)
+                                            {
+                                                <button class="btn btn-sm btn-danger" onclick="anularCompra(@compra.Id)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            }
+                                            <button class="btn btn-sm btn-secondary" onclick="imprimirCompra(@compra.Id)">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fas fa-inbox fa-3x d-block mb-3 opacity-25"></i>
+                                    <p class="mb-0">No hay compras registradas</p>
+                                    <small>Realice una compra para comenzar</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function anularCompra(id) {
+            Swal.fire({
+                title: '¿Anular Compra?',
+                text: 'Esta acción no se puede deshacer. Se restaurará el stock.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: '<i class="fas fa-check me-1"></i> Sí, anular',
+                cancelButtonText: '<i class="fas fa-times me-1"></i> Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/api/compras/${id}/anular`, { method: 'PUT' })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Compra Anulada!',
+                                    text: data.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        })
+                        .catch(() => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Ocurrió un error al anular la compra'
+                            });
+                        });
+                }
+            });
+        }
+
+        function imprimirCompra(id) {
+            window.open(`/compras/imprimir/${id}`, '_blank');
+        }
+
+        function exportarExcel() {
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData).toString();
+            window.location.href = `/compras/exportar?${params}`;
+        }
+    </script>
+}
