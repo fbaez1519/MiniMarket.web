@@ -15,9 +15,7 @@
     </script>
 
     <style>
-        /* ============================================================ */
-        /* ROOT VARIABLES                                              */
-        /* ============================================================ */
+        /* ===== ROOT VARIABLES ===== */
         :root {
             --primary: #1a2a4a;
             --primary-light: #2c4a7a;
@@ -41,9 +39,6 @@
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ============================================================ */
-        /* RESET                                                       */
-        /* ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -57,9 +52,6 @@
             display: flex;
         }
 
-        /* ============================================================ */
-        /* SIDEBAR                                                      */
-        /* ============================================================ */
         .sidebar {
             width: 280px;
             height: 100vh;
@@ -254,9 +246,6 @@
             background: rgba(231, 76, 60, 0.1);
         }
 
-        /* ============================================================ */
-        /* MAIN CONTENT                                                 */
-        /* ============================================================ */
         .main-content {
             flex: 1;
             padding: 2rem 2.5rem;
@@ -375,9 +364,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* ============================================================ */
-        /* STATS CARDS                                                  */
-        /* ============================================================ */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -482,9 +468,6 @@
             background: rgba(231, 76, 60, 0.1);
         }
 
-        /* ============================================================ */
-        /* CHARTS SECTION                                              */
-        /* ============================================================ */
         .charts-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -524,9 +507,6 @@
             height: 220px;
         }
 
-        /* ============================================================ */
-        /* ACTIVITY & PRODUCTS                                         */
-        /* ============================================================ */
         .cards-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -717,9 +697,6 @@
             background: rgba(231, 76, 60, 0.1);
         }
 
-        /* ============================================================ */
-        /* SIDEBAR TOGGLE                                              */
-        /* ============================================================ */
         .sidebar-toggle {
             display: none;
             position: fixed;
@@ -751,9 +728,6 @@
             backdrop-filter: blur(4px);
         }
 
-        /* ============================================================ */
-        /* RESPONSIVE                                                   */
-        /* ============================================================ */
         @media (max-width: 992px) {
             .sidebar {
                 position: fixed;
@@ -818,9 +792,6 @@
             }
         }
 
-        /* ============================================================ */
-        /* SCROLLBAR                                                    */
-        /* ============================================================ */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -838,9 +809,6 @@
             background: var(--primary-light);
         }
 
-        /* ============================================================ */
-        /* ANIMATIONS                                                   */
-        /* ============================================================ */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -924,7 +892,6 @@
                 <i class="fas fa-tags"></i> Categorías
                 <span class="badge badge-warning" id="badgeCategorias">0</span>
             </a>
-            <!-- ✅ OCULTO PARA VENDEDORES (se controla con JavaScript) -->
             <a href="usuarios.html" class="sidebar-nav-item" id="menuUsuarios">
                 <i class="fas fa-user-cog"></i> Usuarios
                 <span class="badge badge-danger" id="badgeUsuarios">0</span>
@@ -1186,6 +1153,7 @@
         // CONFIGURACIÓN
         // =============================================================
         const API_URL = 'http://localhost:5285/api';
+        const token = localStorage.getItem('token');
 
         // =============================================================
         // SIDEBAR TOGGLE (MÓVIL)
@@ -1220,18 +1188,14 @@
             now.toLocaleDateString('es-ES', options);
 
         // =============================================================
-        // OCULTAR OPCIONES SEGÚN ROL (VERSIÓN MEJORADA)
+        // OCULTAR OPCIONES SEGÚN ROL
         // =============================================================
         function actualizarMenuPorRol() {
             const rol = localStorage.getItem('rol');
-
-            // Elementos que SOLO ve el Administrador
             const menuUsuarios = document.getElementById('menuUsuarios');
             const menuConfiguracion = document.getElementById('menuConfiguracion');
 
-            // ✅ ELIMINAR COMPLETAMENTE EL ELEMENTO DEL DOM si es Vendedor
             if (rol !== 'Administrador') {
-                // Ocultar Usuarios
                 if (menuUsuarios) {
                     menuUsuarios.style.display = 'none';
                     menuUsuarios.style.visibility = 'hidden';
@@ -1242,7 +1206,6 @@
                     menuUsuarios.style.margin = '0';
                     menuUsuarios.style.overflow = 'hidden';
                 }
-                // Ocultar Configuración
                 if (menuConfiguracion) {
                     menuConfiguracion.style.display = 'none';
                     menuConfiguracion.style.visibility = 'hidden';
@@ -1255,7 +1218,6 @@
                 }
                 console.log('🔒 Modo Vendedor - Opciones de administrador eliminadas');
             } else {
-                // Mostrar elementos
                 if (menuUsuarios) {
                     menuUsuarios.style.display = 'flex';
                     menuUsuarios.style.visibility = 'visible';
@@ -1315,13 +1277,12 @@
         // =============================================================
         // REDIRECCIONAR A LOGIN SI NO HAY TOKEN
         // =============================================================
-        const token = localStorage.getItem('token');
         if (!token) {
             window.location.href = 'login.html';
         }
 
         // =============================================================
-        // CARGAR DATOS DEL DASHBOARD
+        // CARGAR DATOS DEL DASHBOARD (TODOS REALES)
         // =============================================================
         async function cargarDashboard() {
             try {
@@ -1365,114 +1326,220 @@
                 }
 
                 // =============================================================
-                // ACTUALIZAR STATS
+                // ACTUALIZAR STATS (DATOS REALES)
                 // =============================================================
                 const clientesActivos = clientes.filter(c => c.estaActivo !== false);
-                document.getElementById('totalClientes').textContent = clientesActivos.length || 0;
-                document.getElementById('totalUsuarios').textContent = usuarios.length || 0;
-                document.getElementById('totalProductos').textContent = productos.length || 0;
-                document.getElementById('totalCategorias').textContent = categorias.length || 0;
-                document.getElementById('totalVentas').textContent = ventas.length || 0;
+                const totalClientes = clientesActivos.length || 0;
+                const totalUsuarios = usuarios.length || 0;
+                const totalProductos = productos.length || 0;
+                const totalCategorias = categorias.length || 0;
+                const totalVentas = ventas.length || 0;
+
+                document.getElementById('totalClientes').textContent = totalClientes;
+                document.getElementById('totalUsuarios').textContent = totalUsuarios;
+                document.getElementById('totalProductos').textContent = totalProductos;
+                document.getElementById('totalCategorias').textContent = totalCategorias;
+                document.getElementById('totalVentas').textContent = totalVentas;
 
                 // Actualizar badges del menú
-                document.getElementById('badgeClientes').textContent = clientesActivos.length || 0;
-                document.getElementById('badgeProductos').textContent = productos.length || 0;
-                document.getElementById('badgeCategorias').textContent = categorias.length || 0;
-                document.getElementById('badgeUsuarios').textContent = usuarios.length || 0;
-                document.getElementById('badgeVentas').textContent = ventas.length || 0;
+                document.getElementById('badgeClientes').textContent = totalClientes;
+                document.getElementById('badgeProductos').textContent = totalProductos;
+                document.getElementById('badgeCategorias').textContent = totalCategorias;
+                document.getElementById('badgeUsuarios').textContent = totalUsuarios;
+                document.getElementById('badgeVentas').textContent = totalVentas;
 
-            } catch (error) {
-                console.error('Error al cargar dashboard:', error);
-            }
-        }
+                // =============================================================
+                // GRÁFICO: VENTAS MENSUALES (DATOS REALES)
+                // =============================================================
+                const ventasPorMes = {};
 
-        // =============================================================
-        // INICIALIZAR GRÁFICOS
-        // =============================================================
-        function initCharts() {
-            // Gráfico de Ventas Mensuales (Línea)
-            const ctx1 = document.getElementById('salesChart').getContext('2d');
-            new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    datasets: [{
-                        label: 'Ventas 2024',
-                        data: [1200, 1900, 1500, 2200, 2800, 2400, 3100, 2900, 3500, 3200, 4000, 3800],
-                        borderColor: '#2ecc71',
-                        backgroundColor: 'rgba(46, 204, 113, 0.05)',
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#2ecc71',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.04)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
+                // Inicializar meses con 0
+                const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                meses.forEach(m => ventasPorMes[m] = 0);
+
+                // Agrupar ventas por mes
+                if (ventas.length > 0) {
+                    ventas.forEach(v => {
+                        if (v.fechaVenta) {
+                            const fecha = new Date(v.fechaVenta);
+                            const mesIndex = fecha.getMonth();
+                            const mesNombre = meses[mesIndex];
+                            if (ventasPorMes[mesNombre] !== undefined) {
+                                ventasPorMes[mesNombre] += v.total || 0;
                             }
                         }
-                    }
+                    });
                 }
-            });
 
-            // Gráfico de Distribución (Dona)
-            const ctx2 = document.getElementById('categoryChart').getContext('2d');
-            new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Electrónicos', 'Ropa', 'Alimentos', 'Hogar', 'Otros'],
-                    datasets: [{
-                        data: [35, 25, 20, 12, 8],
-                        backgroundColor: [
-                            '#2ecc71',
-                            '#3498db',
-                            '#f1c40f',
-                            '#8e44ad',
-                            '#e74c3c'
-                        ],
-                        borderWidth: 3,
-                        borderColor: '#fff',
-                        hoverOffset: 8,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 16,
-                                usePointStyle: true,
-                                pointStyle: 'circle',
-                                font: {
-                                    size: 11,
-                                    family: 'Inter'
+                const datosVentasMensuales = meses.map(m => ventasPorMes[m] || 0);
+
+                // =============================================================
+                // GRÁFICO: DISTRIBUCIÓN DE VENTAS POR CATEGORÍA (DATOS REALES)
+                // =============================================================
+                const categoriasVentas = {};
+
+                // Obtener productos para mapear categorías
+                const productosMap = {};
+                if (productos.length > 0) {
+                    productos.forEach(p => {
+                        productosMap[p.id] = p.categoriaNombre || 'Sin categoría';
+                    });
+                }
+
+                // Agrupar ventas por categoría
+                let categoriasConVentas = {};
+                if (ventas.length > 0 && productos.length > 0) {
+                    // Para cada venta, sumar por categoría de sus productos
+                    ventas.forEach(v => {
+                        if (v.detalles && v.detalles.length > 0) {
+                            v.detalles.forEach(d => {
+                                const cat = productosMap[d.productoId] || 'Sin categoría';
+                                if (categoriasConVentas[cat]) {
+                                    categoriasConVentas[cat] += d.subtotal || 0;
+                                } else {
+                                    categoriasConVentas[cat] = d.subtotal || 0;
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // Si no hay datos de categorías, usar las categorías existentes
+                if (Object.keys(categoriasConVentas).length === 0 && categorias.length > 0) {
+                    categoriasConVentas = {};
+                    categorias.forEach(c => {
+                        categoriasConVentas[c.nombre] = 0;
+                    });
+                }
+
+                // Si no hay datos, usar ejemplo
+                if (Object.keys(categoriasConVentas).length === 0) {
+                    categoriasConVentas = {
+                        'Sin categoría': 1
+                    };
+                }
+
+                const labelsCategorias = Object.keys(categoriasConVentas);
+                const dataCategorias = Object.values(categoriasConVentas);
+                const colores = ['#2ecc71', '#3498db', '#f1c40f', '#8e44ad', '#e74c3c', '#1abc9c', '#e67e22', '#2c3e50'];
+
+                // =============================================================
+                // INICIALIZAR GRÁFICOS CON DATOS REALES
+                // =============================================================
+                function initCharts() {
+                    // Gráfico de Ventas Mensuales (Línea)
+                    const ctx1 = document.getElementById('salesChart').getContext('2d');
+                    new Chart(ctx1, {
+                        type: 'line',
+                        data: {
+                            labels: meses,
+                            datasets: [{
+                                label: 'Ventas 2026',
+                                data: datosVentasMensuales,
+                                borderColor: '#2ecc71',
+                                backgroundColor: 'rgba(46, 204, 113, 0.05)',
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: '#2ecc71',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.04)'
+                                    },
+                                    ticks: {
+                                        callback: function(value) {
+                                            return '$' + value.toFixed(0);
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
                                 }
                             }
                         }
-                    },
-                    cutout: '60%',
+                    });
+
+                    // Gráfico de Distribución (Dona)
+                    const ctx2 = document.getElementById('categoryChart').getContext('2d');
+                    new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: {
+                            labels: labelsCategorias,
+                            datasets: [{
+                                data: dataCategorias,
+                                backgroundColor: colores.slice(0, labelsCategorias.length),
+                                borderWidth: 3,
+                                borderColor: '#fff',
+                                hoverOffset: 8,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 16,
+                                        usePointStyle: true,
+                                        pointStyle: 'circle',
+                                        font: {
+                                            size: 11,
+                                            family: 'Inter'
+                                        }
+                                    }
+                                }
+                            },
+                            cutout: '60%',
+                        }
+                    });
                 }
-            });
+
+                // =============================================================
+                // EJECUTAR
+                // =============================================================
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Esperar a que los gráficos existan en el DOM
+                    setTimeout(() => {
+                        initCharts();
+                    }, 100);
+                });
+
+                // =============================================================
+                // CONSOLA
+                // =============================================================
+                console.log('%c🛒 MiniMarket - Dashboard', 'font-size:20px; font-weight:bold; color:#2ecc71;');
+                console.log('%c👤 Usuario: ' + localStorage.getItem('usuario'), 'font-weight:bold;');
+                console.log('%c🔑 Rol: ' + localStorage.getItem('rol'), 'font-weight:bold;');
+                console.log('%c🔗 API: http://localhost:5285', 'color:#7f8c8d;');
+                console.log('%c📊 Dashboard con datos REALES', 'color:#3498db;');
+                console.log('📈 Ventas Mensuales:', datosVentasMensuales);
+                console.log('📊 Distribución por Categoría:', categoriasConVentas);
+
+            } catch (error) {
+                console.error('Error al cargar dashboard:', error);
+                document.getElementById('totalClientes').textContent = 'Error';
+                document.getElementById('totalUsuarios').textContent = 'Error';
+                document.getElementById('totalProductos').textContent = 'Error';
+                document.getElementById('totalCategorias').textContent = 'Error';
+                document.getElementById('totalVentas').textContent = 'Error';
+            }
         }
 
         // =============================================================
@@ -1480,18 +1547,8 @@
         // =============================================================
         document.addEventListener('DOMContentLoaded', function() {
             cargarDashboard();
-            initCharts();
             actualizarMenuPorRol();
         });
-
-        // =============================================================
-        // CONSOLA
-        // =============================================================
-        console.log('%c🛒 MiniMarket - Dashboard', 'font-size:20px; font-weight:bold; color:#2ecc71;');
-        console.log('%c👤 Usuario: ' + localStorage.getItem('usuario'), 'font-weight:bold;');
-        console.log('%c🔑 Rol: ' + localStorage.getItem('rol'), 'font-weight:bold;');
-        console.log('%c🔗 API: http://localhost:5285', 'color:#7f8c8d;');
-        console.log('%c📊 Dashboard con gráficos en tiempo real', 'color:#3498db;');
     </script>
 
 </body>
