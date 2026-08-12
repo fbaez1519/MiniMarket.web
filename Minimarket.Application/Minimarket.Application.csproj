@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Minimarket.Domain\Minimarket.Domain.csproj" />
+    <ProjectReference Include="..\Minimarket.Infrastructure\Minimarket.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

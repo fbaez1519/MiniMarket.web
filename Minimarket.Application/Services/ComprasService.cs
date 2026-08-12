@@ -1,114 +1,87 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Minimarket.Domain.Entities;
+using Minimarket.Infrastructure.Data;
+using Minimarket.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Minimarket.Domain.DTOs.Compra;
-using Minimarket.Domain.Entities;
-using Minimarket.Domain.Enums;
-using Minimarket.Domain.Exceptions;
-using Minimarket.Domain.Interfaces;
 
-namespace Minimarket.Infrastructure.Services
+namespace Minimarket.Application.Services
 {
-    public class CompraService : ICompraService
+    public class ComprasService
     {
-        private readonly ICompraRepository _compraRepository;
-        private readonly IProductoRepository _productoRepository;
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CompraService(ICompraRepository compraRepository, IProductoRepository productoRepository)
+        public ComprasService(ApplicationDbContext context, IMapper mapper)
         {
-            _compraRepository = compraRepository;
-            _productoRepository = productoRepository;
+            _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<CompraDto> CrearCompraAsync(CrearCompraDto compraDto)
+        public async Task<CompraDTO> CreateAsync(CompraCreateDTO compraDto)
         {
             var compra = new Compra
             {
+                NumeroFactura = GenerarNumeroFactura(),
+                FechaCompra = DateTime.UtcNow,
                 ProveedorId = compraDto.ProveedorId,
-                UsuarioId = compraDto.UsuarioId,
-                Fecha = DateTime.Now,
-                Estado = EstadoCompra.Recibida,
+                UsuarioId = 1,
+                Estado = "Pendiente",
                 Observaciones = compraDto.Observaciones,
-                Detalles = new List<DetalleCompra>()
+                GuiaRemision = compraDto.GuiaRemision,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             foreach (var detalleDto in compraDto.Detalles)
             {
-                var producto = await _productoRepository.GetProductoByIdAsync(detalleDto.ProductoId);
+                var producto = await _context.Productos.FindAsync(detalleDto.ProductoId);
                 if (producto == null)
-                    throw new EntidadNoEncontradaException("Producto", detalleDto.ProductoId);
+                    throw new Exception($"Producto con ID {detalleDto.ProductoId} no encontrado");
 
                 var detalle = new DetalleCompra
                 {
                     ProductoId = detalleDto.ProductoId,
                     Cantidad = detalleDto.Cantidad,
-                    PrecioUnitario = detalleDto.PrecioUnitario
+                    PrecioUnitario = detalleDto.PrecioUnitario,
+                    Subtotal = detalleDto.Cantidad * detalleDto.PrecioUnitario,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
                 };
 
                 compra.Detalles.Add(detalle);
             }
 
-            compra.CalcularTotal();
+            compra.Subtotal = compra.Detalles.Sum(d => d.Subtotal);
+            compra.Impuesto = compra.Subtotal * 0.18m;
+            compra.Total = compra.Subtotal + compra.Impuesto;
 
-            var compraCreada = await _compraRepository.CrearCompraAsync(compra);
-            return MapToCompraDto(compraCreada);
+            _context.Compras.Add(compra);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<CompraDTO>(compra);
         }
 
-        public async Task<CompraDto> GetCompraByIdAsync(int id)
+        public async Task<CompraDTO> GetByIdAsync(int id)
         {
-            var compra = await _compraRepository.GetCompraByIdAsync(id);
-            if (compra == null)
-                throw new EntidadNoEncontradaException("Compra", id);
+            var compra = await _context.Compras
+                .Include(c => c.Proveedor)
+                .Include(c => c.Usuario)
+                .Include(c => c.Detalles)
+                .ThenInclude(d => d.Producto)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
-            return MapToCompraDto(compra);
+            return compra == null ? null : _mapper.Map<CompraDTO>(compra);
         }
 
-        public async Task<List<CompraDto>> GetComprasAsync(FiltroCompraDto filtro)
+        private string GenerarNumeroFactura()
         {
-            var compras = await _compraRepository.GetComprasAsync(filtro);
-            return compras.Select(MapToCompraDto).ToList();
-        }
-
-        public async Task<bool> AnularCompraAsync(int id)
-        {
-            var compra = await _compraRepository.GetCompraByIdAsync(id);
-            if (compra == null)
-                throw new EntidadNoEncontradaException("Compra", id);
-
-            if (compra.Estado == EstadoCompra.Cancelada)
-                throw new InvalidOperationException("La compra ya está anulada");
-
-            return await _compraRepository.AnularCompraAsync(id);
-        }
-
-        public async Task<decimal> GetTotalComprasDelMesAsync()
-        {
-            return await _compraRepository.GetTotalComprasDelMesAsync();
-        }
-
-        private CompraDto MapToCompraDto(Compra compra)
-        {
-            return new CompraDto
-            {
-                Id = compra.Id,
-                NumeroCompra = compra.NumeroCompra,
-                Fecha = compra.Fecha,
-                ProveedorId = compra.ProveedorId,
-                ProveedorNombre = compra.Proveedor?.Nombre ?? "Proveedor No Especificado",
-                ProveedorRuc = compra.Proveedor?.Ruc,
-                Total = compra.Total,
-                Estado = compra.Estado,
-                Observaciones = compra.Observaciones,
-                Detalles = compra.Detalles?.Select(d => new DetalleCompraDto
-                {
-                    ProductoId = d.ProductoId,
-                    ProductoNombre = d.Producto?.Nombre ?? "Producto Eliminado",
-                    Cantidad = d.Cantidad,
-                    PrecioUnitario = d.PrecioUnitario,
-                    Subtotal = d.Subtotal
-                }).ToList() ?? new List<DetalleCompraDto>()
-            };
+            var fecha = DateTime.Now;
+            var consecutivo = _context.Compras.Count() + 1;
+            return $"COM-{fecha:yyyyMMdd}-{consecutivo:D4}";
         }
     }
 }

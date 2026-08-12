@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Minimarket.Application\Minimarket.Application.csproj" />
     <ProjectReference Include="..\Minimarket.Infrastructure\Minimarket.Infrastructure.csproj" />
+    <ProjectReference Include="..\Minimarket.Domain\Minimarket.Domain.csproj" />
   </ItemGroup>
 
 </Project>
